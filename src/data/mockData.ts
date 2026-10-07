@@ -10,18 +10,22 @@ export const CATEGORIES: Category[] = [
     slug: 'womens-clothing',
     iconName: 'Sparkles',
     image: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=600&auto=format&fit=crop&q=80',
-    itemCount: 45,
+    itemCount: 3569,
     featured: true,
     subcategories: [
-      { id: 'saree', nameBn: 'শাড়ি কালেকশন', nameEn: 'Saree Collection', image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=120&auto=format&fit=crop&q=80' },
-      { id: 'three-piece', nameBn: 'রেডিমেড থ্রিপিস ও কুর্তি', nameEn: 'Three-Piece & Kurti', image: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=120&auto=format&fit=crop&q=80' },
-      { id: 'girls-tops', nameBn: 'টপস ও টিশার্ট', nameEn: 'Tops & T-Shirts', image: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=120&auto=format&fit=crop&q=80' },
-      { id: 'borka-abaya', nameBn: 'বোরকা ও আবায়া', nameEn: 'Borka & Abaya', image: 'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=120&auto=format&fit=crop&q=80' },
-      { id: 'tanter-saree', nameBn: 'তাঁতের শাড়ী', nameEn: 'Tanter Saree', image: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=120&auto=format&fit=crop&q=80' },
-      { id: 'handprint-saree', nameBn: 'হ্যান্ডপ্রিন্ট শাড়ি', nameEn: 'Handprint Saree', image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=120&auto=format&fit=crop&q=80' },
-      { id: 'sunnati-dress', nameBn: 'সুন্নাতি ড্রেস', nameEn: 'Sunnati Dress', image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=120&auto=format&fit=crop&q=80' },
-      { id: 'inner-nighty', nameBn: 'ইনার ও নাইটি', nameEn: 'Inner & Nighty', image: 'https://images.unsplash.com/photo-1582533561751-ef6f6ab93a2e?w=120&auto=format&fit=crop&q=80' },
-      { id: 'girls-clothing', nameBn: 'মেয়েদের ফ্যাশন', nameEn: 'Women Fashion', image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=120&auto=format&fit=crop&q=80' }
+      { id: 'saree', nameBn: 'শাড়ি', nameEn: 'Saree', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1691436424.png' },
+      { id: 'tanter-saree', nameBn: 'তাঁতের শাড়ী', nameEn: 'Tanter Saree', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1738399069.png' },
+      { id: 'handprint-saree', nameBn: 'হ্যান্ডপ্রিন্ট শাড়ি', nameEn: 'Handprint Saree', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1738402885.png' },
+      { id: 'indian-saree', nameBn: 'ইন্ডিয়ান শাড়ী', nameEn: 'Indian Saree', image: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=120&auto=format&fit=crop&q=80' },
+      { id: 'three-piece', nameBn: 'রেডিমেড থ্রিপিস', nameEn: 'Readymade Three-Piece', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1691436552.png' },
+      { id: 'unstitched-threepiece', nameBn: 'আনস্টিজ থ্রিপিস', nameEn: 'Unstitched Three-Piece', image: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=120&auto=format&fit=crop&q=80' },
+      { id: 'gown-kurti', nameBn: 'গাউন & কুর্তি', nameEn: 'Gown & Kurti', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1696259740.jpg' },
+      { id: 'lehenga-party', nameBn: 'লেহেঙ্গা & পার্টি', nameEn: 'Lehenga & Party Wear', image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=120&auto=format&fit=crop&q=80' },
+      { id: 'borka-abaya', nameBn: 'বোরকা', nameEn: 'Borka & Abaya', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1696260414.png' },
+      { id: 'hijab-niqab', nameBn: 'হিজাব & নিকাব', nameEn: 'Hijab & Niqab', image: 'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=120&auto=format&fit=crop&q=80' },
+      { id: 'sunnati-dress', nameBn: 'সুন্নাতি ড্রেস', nameEn: 'Sunnati Dress', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1738404195.png' },
+      { id: 'inner-nighty', nameBn: 'ইনার & নাইটি', nameEn: 'Inner & Nighty', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1696256243.png' },
+      { id: 'western-dress', nameBn: 'ওয়েস্টার্ন ড্রেস', nameEn: 'Western Dress', image: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=120&auto=format&fit=crop&q=80' },
     ]
   },
   {
@@ -31,17 +35,25 @@ export const CATEGORIES: Category[] = [
     slug: 'mens-clothing',
     iconName: 'Shirt',
     image: 'https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?w=600&auto=format&fit=crop&q=80',
-    itemCount: 52,
+    itemCount: 3248,
     featured: true,
     subcategories: [
       { id: 'polo-shirts', nameBn: 'পলো শার্ট', nameEn: 'Polo Shirts', image: 'https://shopbasebd.com/public/uploads/shop/products/1789381529_L_5.jpeg' },
-      { id: 'basic-tshirt', nameBn: 'বেসিক টি-শার্ট', nameEn: 'Basic T-Shirts', image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=120&auto=format&fit=crop&q=80' },
-      { id: 'dropshoulder-tshirt', nameBn: 'ড্রপসোল্ডার টিশার্ট', nameEn: 'Drop Shoulder T-Shirts', image: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=120&auto=format&fit=crop&q=80' },
-      { id: 'embroidery-panjabi', nameBn: 'পাঞ্জাবি কালেকশন', nameEn: 'Panjabi Collection', image: 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=120&auto=format&fit=crop&q=80' },
-      { id: 'printed-shirt', nameBn: 'প্রিন্ট শার্ট', nameEn: 'Printed Shirts', image: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=120&auto=format&fit=crop&q=80' },
-      { id: 'katua', nameBn: 'কাতুয়া', nameEn: 'Katua Collection', image: 'https://images.unsplash.com/photo-1597983073493-88cd35cf93b0?w=120&auto=format&fit=crop&q=80' },
-      { id: 'jeans-pant', nameBn: 'জিন্স প্যান্ট', nameEn: 'Jeans Pants', image: 'https://images.unsplash.com/photo-1542272604-780c96856592?w=120&auto=format&fit=crop&q=80' },
-      { id: 'chino-pant', nameBn: 'চিনো প্যান্ট', nameEn: 'Chino Pants', image: 'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=120&auto=format&fit=crop&q=80' }
+      { id: 'dropshoulder-tshirt', nameBn: 'ড্রপসোল্ডার টিশার্ট', nameEn: 'Drop Shoulder T-Shirts', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1769500397.png' },
+      { id: 'basic-tshirt', nameBn: 'বেসিক টিশার্ট', nameEn: 'Basic T-Shirts', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1769500295.png' },
+      { id: 'long-sleeve-tshirt', nameBn: 'লং-স্লীভ টিশার্ট', nameEn: 'Long Sleeve T-Shirts', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1769500733.png' },
+      { id: 'printed-shirt', nameBn: 'প্রিন্ট শার্ট', nameEn: 'Printed Shirts', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1696174388.png' },
+      { id: 'solid-shirt', nameBn: 'সলিড শার্ট', nameEn: 'Solid Shirts', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1769500890.png' },
+      { id: 'check-shirt', nameBn: 'চেক শার্ট', nameEn: 'Check Shirts', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1769501420.png' },
+      { id: 'shirt-combo', nameBn: 'শার্ট কম্বো', nameEn: 'Shirt Combo', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1738389025.png' },
+      { id: 'short-combo', nameBn: 'শর্ট কম্বো', nameEn: 'Short Combo', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1696173751.png' },
+      { id: 'half-sleeve-set', nameBn: 'হাফ স্লিভ সেট', nameEn: 'Half Sleeve Set', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1760424071.png' },
+      { id: 'long-sleeve-set', nameBn: 'লং স্লিভ সেট', nameEn: 'Long Sleeve Set', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1760424294.png' },
+      { id: 'embroidery-panjabi', nameBn: 'এমব্রো. পাঞ্জাবি', nameEn: 'Embroidery Panjabi', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1738393868.png' },
+      { id: 'print-panjabi', nameBn: 'প্রিন্ট পাঞ্জাবি', nameEn: 'Print Panjabi', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1738394140.png' },
+      { id: 'panjabi-combo', nameBn: 'পাঞ্জাবি কম্বো', nameEn: 'Panjabi Combo', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1709743708.jpeg' },
+      { id: 'katua', nameBn: 'কাতুয়া', nameEn: 'Katua', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1789034416.png' },
+      { id: 'jeans-pant', nameBn: 'প্যান্ট+ট্রাউজার', nameEn: 'Pants & Trousers', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1760525585.png' },
     ]
   },
   {
@@ -51,15 +63,19 @@ export const CATEGORIES: Category[] = [
     slug: 'baby-collection',
     iconName: 'Smile',
     image: 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600&auto=format&fit=crop&q=80',
-    itemCount: 28,
+    itemCount: 1112,
     featured: true,
     subcategories: [
-      { id: 'kids-clothing', nameBn: 'কিডস কালেকশন', nameEn: 'Kids Collection', image: 'https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=120&auto=format&fit=crop&q=80' },
-      { id: 'pari-dress', nameBn: 'পরী ড্রেস', nameEn: 'Pari Dress', image: 'https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=120&auto=format&fit=crop&q=80' },
-      { id: 'baby-borka', nameBn: 'বেবি বোরখা', nameEn: 'Baby Borka', image: 'https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?w=120&auto=format&fit=crop&q=80' },
-      { id: 'kids-pant', nameBn: 'কিডস প্যান্ট', nameEn: 'Kids Pant', image: 'https://images.unsplash.com/photo-1503944583220-79d8926ad5e2?w=120&auto=format&fit=crop&q=80' },
+      { id: 'boys-tshirt-set', nameBn: 'বয়েজ টিশার্ট সেট', nameEn: 'Boys T-Shirt Set', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1769590419.png' },
       { id: 'girls-tshirt-set', nameBn: 'গার্লস টিশার্ট সেট', nameEn: 'Girls T-Shirt Set', image: 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=120&auto=format&fit=crop&q=80' },
-      { id: 'baby', nameBn: 'বেবি ও কিডস কেয়ার', nameEn: 'Baby & Kids Care', image: 'https://images.unsplash.com/photo-1522771930-78848d9293e8?w=120&auto=format&fit=crop&q=80' }
+      { id: 'baby-winter-dress', nameBn: 'বেবি উইন্টার ড্রেসসমূহ', nameEn: 'Baby Winter Dresses', image: 'https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=120&auto=format&fit=crop&q=80' },
+      { id: 'pari-dress', nameBn: 'পরী ড্রেস', nameEn: 'Pari Dress', image: 'https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=120&auto=format&fit=crop&q=80' },
+      { id: 'baby-toys', nameBn: 'খেলনা & দোলনা', nameEn: 'Toys & Swings', image: 'https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=120&auto=format&fit=crop&q=80' },
+      { id: 'baby-winter-accessories', nameBn: 'বেবি উইন্টার এক্সেসরিজ', nameEn: 'Baby Winter Accessories', image: 'https://images.unsplash.com/photo-1517445312882-bc9910d016b7?w=120&auto=format&fit=crop&q=80' },
+      { id: 'baby-kameez', nameBn: 'বেবি কামিজ', nameEn: 'Baby Kameez', image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=120&auto=format&fit=crop&q=80' },
+      { id: 'baby-borka', nameBn: 'বেবি বোরখা', nameEn: 'Baby Borka', image: 'https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?w=120&auto=format&fit=crop&q=80' },
+      { id: 'baby-shirt', nameBn: 'বেবি শার্ট', nameEn: 'Baby Shirt', image: 'https://images.unsplash.com/photo-1503944583220-79d8926ad5e2?w=120&auto=format&fit=crop&q=80' },
+      { id: 'kids-pant', nameBn: 'কিডস প্যান্ট', nameEn: 'Kids Pants', image: 'https://images.unsplash.com/photo-1503944583220-79d8926ad5e2?w=120&auto=format&fit=crop&q=80' },
     ]
   },
   {
@@ -69,12 +85,13 @@ export const CATEGORIES: Category[] = [
     slug: 'couple-combo',
     iconName: 'Heart',
     image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80',
-    itemCount: 24,
+    itemCount: 719,
     featured: true,
     subcategories: [
-      { id: 'couple-saree', nameBn: 'কাপল শাড়ী ও পাঞ্জাবি', nameEn: 'Couple Saree & Panjabi', image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80' },
-      { id: 'couple-threepiece', nameBn: 'কাপল থ্রীপিস', nameEn: 'Couple Threepiece', image: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=120&auto=format&fit=crop&q=80' },
-      { id: 'tshirt-skirt', nameBn: 'টিশার্ট & স্কার্ট কম্বো', nameEn: 'T-Shirt & Skirt Combo', image: 'https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?w=120&auto=format&fit=crop&q=80' }
+      { id: 'couple-saree', nameBn: 'কাপল শাড়ী', nameEn: 'Couple Saree', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1691436695.png' },
+      { id: 'couple-threepiece', nameBn: 'কাপল থ্রীপিস', nameEn: 'Couple Three-Piece', image: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=120&auto=format&fit=crop&q=80' },
+      { id: 'tshirt-skirt', nameBn: 'টিশার্ট & স্কার্ট', nameEn: 'T-Shirt & Skirt Combo', image: 'https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?w=120&auto=format&fit=crop&q=80' },
+      { id: 'sharee-combo', nameBn: 'শাড়ী কম্বো', nameEn: 'Saree Combo', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1691436695.png' },
     ]
   },
   {
@@ -84,16 +101,17 @@ export const CATEGORIES: Category[] = [
     slug: 'home-living',
     iconName: 'Home',
     image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600&auto=format&fit=crop&q=80',
-    itemCount: 30,
+    itemCount: 967,
     featured: true,
     subcategories: [
-      { id: 'bedsheet', nameBn: 'রেগুলার বেডশীট', nameEn: 'Regular Bedsheets', image: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=120&auto=format&fit=crop&q=80' },
-      { id: 'home-decor', nameBn: 'গৃহ সজ্জা ও ডেকর', nameEn: 'Home Decor', image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=120&auto=format&fit=crop&q=80' },
-      { id: 'waterproof-dining', nameBn: 'ওয়াটারপ্রুফ ডাইনিং', nameEn: 'Waterproof Dining', image: 'https://images.unsplash.com/photo-1615865417491-9941019fbc00?w=120&auto=format&fit=crop&q=80' },
+      { id: 'bedsheet', nameBn: 'রেগুলার বেডশীট', nameEn: 'Regular Bedsheets', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1788866862.jpeg' },
+      { id: 'waterproof-bedsheet', nameBn: 'ওয়াটারপ্রুফ বেডশিট', nameEn: 'Waterproof Bedsheet', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1788866862.jpeg' },
       { id: 'regular-dining', nameBn: 'রেগুলার ডাইনিং', nameEn: 'Regular Dining', image: 'https://images.unsplash.com/photo-1577140917170-285929fb55b7?w=120&auto=format&fit=crop&q=80' },
-      { id: 'ac-katha', nameBn: 'এসি কাথা', nameEn: 'AC Katha', image: 'https://images.unsplash.com/photo-1600121848594-d8644e57abab?w=120&auto=format&fit=crop&q=80' },
+      { id: 'waterproof-dining', nameBn: 'ওয়াটারপ্রুফ ডাইনিং', nameEn: 'Waterproof Dining', image: 'https://images.unsplash.com/photo-1615865417491-9941019fbc00?w=120&auto=format&fit=crop&q=80' },
       { id: 'comforter', nameBn: 'কম্ফর্টার', nameEn: 'Comforter', image: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=120&auto=format&fit=crop&q=80' },
-      { id: 'home', nameBn: 'হোম ও কিচেন অ্যাপ্লায়েন্স', nameEn: 'Home & Kitchen Appliances', image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=120&auto=format&fit=crop&q=80' }
+      { id: 'ac-katha', nameBn: 'এসি কাথা', nameEn: 'AC Katha', image: 'https://images.unsplash.com/photo-1600121848594-d8644e57abab?w=120&auto=format&fit=crop&q=80' },
+      { id: 'home-decor', nameBn: 'গৃহ সজ্জা', nameEn: 'Home Decor', image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=120&auto=format&fit=crop&q=80' },
+      { id: 'home-care', nameBn: 'হোম কেয়ার', nameEn: 'Home Care', image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=120&auto=format&fit=crop&q=80' },
     ]
   },
   {
@@ -103,11 +121,13 @@ export const CATEGORIES: Category[] = [
     slug: 'bag-collection',
     iconName: 'ShoppingBag',
     image: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&auto=format&fit=crop&q=80',
-    itemCount: 16,
+    itemCount: 603,
     featured: true,
     subcategories: [
       { id: 'girls-bag', nameBn: 'মেয়েদের ব্যাগ', nameEn: 'Girls Handbag', image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=120&auto=format&fit=crop&q=80' },
-      { id: 'purse-bag', nameBn: 'পার্স ও ওয়ালেট ব্যাগ', nameEn: 'Purse & Wallets', image: 'https://images.unsplash.com/photo-1627123424574-724758594e93?w=120&auto=format&fit=crop&q=80' }
+      { id: 'purse-bag', nameBn: 'পার্স ব্যাগ', nameEn: 'Purse & Wallets', image: 'https://images.unsplash.com/photo-1627123424574-724758594e93?w=120&auto=format&fit=crop&q=80' },
+      { id: 'boys-bag', nameBn: 'ছেলেদের ব্যাগ', nameEn: 'Boys Bag', image: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=120&auto=format&fit=crop&q=80' },
+      { id: 'carry-bag', nameBn: 'ক্যারি ব্যাগ', nameEn: 'Carry Bag', image: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=120&auto=format&fit=crop&q=80' },
     ]
   },
   {
@@ -117,10 +137,15 @@ export const CATEGORIES: Category[] = [
     slug: 'jewelry-accessories',
     iconName: 'Gem',
     image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600&auto=format&fit=crop&q=80',
-    itemCount: 18,
+    itemCount: 674,
     featured: true,
     subcategories: [
-      { id: 'accessories', nameBn: 'এক্সেসরিজ কালেকশন', nameEn: 'Accessories', image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=120&auto=format&fit=crop&q=80' }
+      { id: 'clip-band', nameBn: 'ক্লিপ & ব্যান্ড', nameEn: 'Clips & Bands', image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=120&auto=format&fit=crop&q=80' },
+      { id: 'accessories', nameBn: 'এক্সেসরিজ', nameEn: 'Accessories', image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=120&auto=format&fit=crop&q=80' },
+      { id: 'beauty-care', nameBn: 'বিউটি কেয়ার', nameEn: 'Beauty Care', image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=120&auto=format&fit=crop&q=80' },
+      { id: 'natural-care', nameBn: 'ন্যাচারাল কেয়ার', nameEn: 'Natural Care', image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=120&auto=format&fit=crop&q=80' },
+      { id: 'personal-care', nameBn: 'পার্সোনাল কেয়ার', nameEn: 'Personal Care', image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=120&auto=format&fit=crop&q=80' },
+      { id: 'gift-item', nameBn: 'গিফট আইটেম', nameEn: 'Gift Items', image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=120&auto=format&fit=crop&q=80' },
     ]
   },
   {
@@ -130,11 +155,14 @@ export const CATEGORIES: Category[] = [
     slug: 'electronics-gadgets',
     iconName: 'Smartphone',
     image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&auto=format&fit=crop&q=80',
-    itemCount: 22,
+    itemCount: 249,
     featured: true,
     subcategories: [
-      { id: 'smartphones', nameBn: 'স্মার্টফোন', nameEn: 'Smartphones', image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=120&auto=format&fit=crop&q=80' },
-      { id: 'electronics', nameBn: 'স্মার্ট গ্যাজেট ও অ্যাক্সেসরিজ', nameEn: 'Smart Gadgets & Accessories', image: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=120&auto=format&fit=crop&q=80' }
+      { id: 'fan', nameBn: 'ফ্যান', nameEn: 'Fans', image: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=120&auto=format&fit=crop&q=80' },
+      { id: 'watch', nameBn: 'ঘড়ি', nameEn: 'Watch & Smartwatches', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1696174050.png' },
+      { id: 'gadgets', nameBn: 'গ্যাজেটস', nameEn: 'Gadgets & Tech', image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=120&auto=format&fit=crop&q=80' },
+      { id: 'speaker', nameBn: 'স্পিকার', nameEn: 'Speakers & Audio', image: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=120&auto=format&fit=crop&q=80' },
+      { id: 'camera', nameBn: 'ক্যামেরা', nameEn: 'Cameras', image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=120&auto=format&fit=crop&q=80' },
     ]
   },
   {
@@ -144,16 +172,19 @@ export const CATEGORIES: Category[] = [
     slug: 'winter-collection',
     iconName: 'Snowflake',
     image: 'https://images.unsplash.com/photo-1517445312882-bc9910d016b7?w=600&auto=format&fit=crop&q=80',
-    itemCount: 36,
+    itemCount: 821,
     featured: true,
     subcategories: [
-      { id: 'hoodie-sweatshirt', nameBn: 'হুডি / সোয়েটশার্ট', nameEn: 'Hoodie & Sweatshirt', image: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=120&auto=format&fit=crop&q=80' },
-      { id: 'jacket-blazer', nameBn: 'জ্যাকেট / ব্লেজার', nameEn: 'Jacket & Blazer', image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=120&auto=format&fit=crop&q=80' },
-      { id: 'gents-jacket', nameBn: 'জেন্টস জ্যাকেট', nameEn: 'Gents Jacket', image: 'https://images.unsplash.com/photo-1495105787522-5334e3ffa0ef?w=120&auto=format&fit=crop&q=80' },
-      { id: 'gents-hoodie', nameBn: 'জেন্টস হুডি', nameEn: 'Gents Hoodie', image: 'https://images.unsplash.com/photo-1509967419530-da38b4704bc6?w=120&auto=format&fit=crop&q=80' },
-      { id: 'ladies-hoodie', nameBn: 'লেডিস হুডি', nameEn: 'Ladies Hoodie', image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=120&auto=format&fit=crop&q=80' },
+      { id: 'gents-hoodie', nameBn: 'জেন্টস হুডি', nameEn: 'Gents Hoodie', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1698096670.jpeg' },
+      { id: 'hoodie-set', nameBn: 'হুডি সেট', nameEn: 'Hoodie Set', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1698096670.jpeg' },
+      { id: 'ladies-hoodie', nameBn: 'লেডিস হুডি', nameEn: 'Ladies Hoodie', image: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=120&auto=format&fit=crop&q=80' },
+      { id: 'gents-jacket', nameBn: 'জেন্টস জ্যাকেট', nameEn: 'Gents Jacket', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1698097125.png' },
+      { id: 'ladies-jacket', nameBn: 'লেডিস জ্যাকেট', nameEn: 'Ladies Jacket', image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=120&auto=format&fit=crop&q=80' },
       { id: 'ladies-overcoat', nameBn: 'লেডিস ওভারকোট', nameEn: 'Ladies Overcoat', image: 'https://images.unsplash.com/photo-1539533018447-63fcce667823?w=120&auto=format&fit=crop&q=80' },
-      { id: 'hoodie-set', nameBn: 'হুডি সেট', nameEn: 'Hoodie Set', image: 'https://images.unsplash.com/photo-1517445312882-bc9910d016b7?w=120&auto=format&fit=crop&q=80' }
+      { id: 'sweater', nameBn: 'সুয়েটার', nameEn: 'Sweater', image: 'https://images.unsplash.com/photo-1517445312882-bc9910d016b7?w=120&auto=format&fit=crop&q=80' },
+      { id: 'sweatshirt-set', nameBn: 'সুইটশার্ট সেট', nameEn: 'Sweatshirt Set', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1698096670.jpeg' },
+      { id: 'ladies-winter-accessories', nameBn: 'লেডিস উইন্টার এক্সেসরিজ', nameEn: 'Ladies Winter Accessories', image: 'https://images.unsplash.com/photo-1517445312882-bc9910d016b7?w=120&auto=format&fit=crop&q=80' },
+      { id: 'gents-winter-accessories', nameBn: 'জেন্টস উইন্টার এক্সেসরিজ', nameEn: 'Gents Winter Accessories', image: 'https://images.unsplash.com/photo-1517445312882-bc9910d016b7?w=120&auto=format&fit=crop&q=80' },
     ]
   },
   {
@@ -163,10 +194,12 @@ export const CATEGORIES: Category[] = [
     slug: 'seasonal-products',
     iconName: 'Calendar',
     image: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=600&auto=format&fit=crop&q=80',
-    itemCount: 14,
+    itemCount: 175,
     featured: true,
     subcategories: [
-      { id: 'world-cup', nameBn: 'ওয়ার্ল্ড কাপ কালেকশন', nameEn: 'World Cup Collection', image: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=120&auto=format&fit=crop&q=80' }
+      { id: 'world-cup', nameBn: 'ওয়ার্ল্ড কাপ', nameEn: 'World Cup Collection', image: 'https://shopbasebd.com/public/uploads/shop/category/scategory-1779218008.png' },
+      { id: 'umbrella', nameBn: 'ছাতা', nameEn: 'Umbrellas', image: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=120&auto=format&fit=crop&q=80' },
+      { id: 'raincoat', nameBn: 'রেইন কোট', nameEn: 'Raincoats', image: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=120&auto=format&fit=crop&q=80' },
     ]
   },
   {
@@ -176,13 +209,14 @@ export const CATEGORIES: Category[] = [
     slug: 'other-categories',
     iconName: 'Grid',
     image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&auto=format&fit=crop&q=80',
-    itemCount: 15,
+    itemCount: 56,
     featured: true,
     subcategories: [
+      { id: 'shoes', nameBn: 'জুতা', nameEn: 'Shoes & Footwear', image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=120&auto=format&fit=crop&q=80' },
+      { id: 'toys-sports', nameBn: 'টয়স & স্পোর্টস', nameEn: 'Toys & Sports', image: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=120&auto=format&fit=crop&q=80' },
       { id: 'grocery', nameBn: 'মুদি ও খাঁটি পণ্য', nameEn: 'Grocery & Pure Foods', image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=120&auto=format&fit=crop&q=80' },
       { id: 'beauty', nameBn: 'বিউটি ও রূপচর্চা', nameEn: 'Beauty & Personal Care', image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=120&auto=format&fit=crop&q=80' },
       { id: 'books', nameBn: 'বই ও স্টেশনারি', nameEn: 'Books & Stationery', image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=120&auto=format&fit=crop&q=80' },
-      { id: 'sports', nameBn: 'স্পোর্টস ও ফিটনেস', nameEn: 'Sports & Fitness', image: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=120&auto=format&fit=crop&q=80' }
     ]
   }
 ];

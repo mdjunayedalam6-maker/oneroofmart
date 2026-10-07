@@ -346,7 +346,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [categories, setCategories] = useState<Category[]>(() => {
     try {
       const version = safeLocalStorage.getItem('oneroof_cat_schema_version');
-      if (version === 'v6_subcategories_with_distinct_images') {
+      if (version === 'v7_complete_all_shopbase_subcategories') {
         const saved = safeLocalStorage.getItem('oneroof_categories');
         if (saved !== null) {
           const parsed: Category[] = JSON.parse(saved);
@@ -356,8 +356,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           }
         }
       }
-      // Force migration to clean 11 structured categories with distinct subcategory images
-      safeLocalStorage.setItem('oneroof_cat_schema_version', 'v6_subcategories_with_distinct_images');
+      // Force migration to clean 11 structured categories with complete subcategory catalog
+      safeLocalStorage.setItem('oneroof_cat_schema_version', 'v7_complete_all_shopbase_subcategories');
       safeLocalStorage.setItem('oneroof_categories', JSON.stringify(CATEGORIES));
       idbSet('oneroof_cached_categories', CATEGORIES).catch(() => {});
       syncCategoriesToSupabase(CATEGORIES).catch(() => {});
