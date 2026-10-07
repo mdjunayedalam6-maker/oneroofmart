@@ -1225,3 +1225,122 @@ export function getShopBaseCategoryMetadata(slugOrName: string): {
     iconName: 'ShoppingBag',
   };
 }
+
+export const DEFAULT_SHOPBASE_ACCOUNT = '01929637253';
+export const DEFAULT_SHOPBASE_PASSWORD = 'junaid$#';
+
+/**
+ * Mass fetcher: Fetches live products across all popular ShopBaseBD categories
+ * with custom profit margin (10% - 15%) and progress callback.
+ */
+export async function fetchAllLiveShopBaseProducts(
+  marginPercent: number = 15,
+  onProgress?: (loadedCount: number, currentCategory: string, totalCategories: number) => void
+): Promise<Product[]> {
+  const allProducts: Product[] = [];
+  const seenIds = new Set<string>();
+
+  // 1. First add all curated verified products
+  const curated = getCuratedShopBaseProducts(marginPercent);
+  for (const p of curated) {
+    if (!seenIds.has(p.id)) {
+      seenIds.add(p.id);
+      allProducts.push(p);
+    }
+  }
+
+  // 2. Fetch all categories list
+  const categories = await fetchShopBaseCategories();
+  const targetCategories = categories; // All active categories from ShopBaseBD
+
+  for (let i = 0; i < targetCategories.length; i++) {
+    const cat = targetCategories[i];
+    if (onProgress) {
+      onProgress(allProducts.length, cat.name, targetCategories.length);
+    }
+
+    try {
+      const items = await fetchShopBaseProductsByCategory(
+        cat.id,
+        cat.targetSlug,
+        cat.name,
+        marginPercent
+      );
+
+      for (const item of items) {
+        if (!seenIds.has(item.id)) {
+          seenIds.add(item.id);
+          allProducts.push(item);
+        }
+      }
+    } catch (err) {
+      console.warn(`Error fetching products for category ${cat.name}:`, err);
+    }
+  }
+
+  if (onProgress) {
+    onProgress(allProducts.length, 'সম্পন্ন', targetCategories.length);
+  }
+
+  return allProducts;
+}
+
+/**
+ * Formats a clean dropshipping order parcel slip for ShopBaseBD dispatch
+ */
+export function generateShopBaseDropshipOrderSlip(
+  order: any,
+  resellerAccount: string = DEFAULT_SHOPBASE_ACCOUNT
+): string {
+  const itemsList = order.items.map((it: any, idx: number) => {
+    const sizeInfo = it.selectedSize ? ` (সাইজ: ${it.selectedSize})` : '';
+    const colorInfo = it.selectedColor ? ` (কালার: ${it.selectedColor})` : '';
+    return `${idx + 1}. ${it.title}${sizeInfo}${colorInfo} - ${it.quantity} টি (মূল্য: ৳${it.price})`;
+  }).join('\n');
+
+  const wholesaleEstimate = Math.round(order.subtotal / 1.15);
+  const profitEstimate = Math.max(0, order.subtotal - wholesaleEstimate);
+
+  return `=========================================
+📦 SHOPBASE BD - অটো ড্রপশিপিং পার্সেল বুকিং
+=========================================
+রিসেলার আইডি / মোবাইল: ${resellerAccount}
+অর্ডার আইডি (OneRoof): #${order.id}
+অর্ডারের তারিখ: ${order.date || new Date().toLocaleDateString('bn-BD')}
+
+👤 গ্রাহকের তথ্য (ডেলিভারি ঠিকানা):
+-----------------------------------------
+নাম: ${order.shippingAddress.fullName}
+ফোন নাম্বার: ${order.shippingAddress.phone}
+ঠিকানা: ${order.shippingAddress.address}
+জেলা ও বিভাগ: ${order.shippingAddress.district}, ${order.shippingAddress.division}
+ডেলিভারি টাইপ: ক্যাশ অন ডেলিভারি (COD)
+
+🛍️ অর্ডারকৃত পণ্যের বিবরণ:
+-----------------------------------------
+${itemsList}
+
+💰 আর্থিক হিসাব (ক্যাশ কালেকশন):
+-----------------------------------------
+কাস্টমার থেকে মোট আদায়: ৳ ${order.total} (ক্যাশ অন ডেলিভারি)
+আইটেম সাবটোটাল: ৳ ${order.subtotal}
+ডেলিভারি চার্জ: ৳ ${order.shippingFee}
+আনুমানিক পাইকারি খরচ (Wholesale): ৳ ${wholesaleEstimate}
+রিসেলারের নিট প্রফিট (১৫% লাভ): ৳ ${profitEstimate}
+
+নির্দেশনা: কাস্টমার পার্সেল রিসিভ করার পর রিসেলার একাউন্ট (${resellerAccount})-এ লাভ জমা হবে।
+=========================================`;
+}
+
+/**
+ * Creates direct WhatsApp dispatch link for ShopBaseBD Support / Dropship Dispatch
+ */
+export function getShopBaseWhatsAppDispatchUrl(
+  order: any,
+  resellerAccount: string = DEFAULT_SHOPBASE_ACCOUNT,
+  shopbaseHelplinePhone: string = '8801929637253'
+): string {
+  const slip = generateShopBaseDropshipOrderSlip(order, resellerAccount);
+  const cleanPhone = shopbaseHelplinePhone.replace(/[^0-9]/g, '');
+  return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(slip)}`;
+}

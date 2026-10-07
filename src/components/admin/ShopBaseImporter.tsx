@@ -15,7 +15,14 @@ import {
   TrendingUp,
   Tag,
   Check,
-  PackageCheck
+  PackageCheck,
+  Eye,
+  EyeOff,
+  ShieldCheck,
+  Truck,
+  Zap,
+  KeyRound,
+  Send
 } from 'lucide-react';
 import { Product, Category } from '../../types';
 import { 
@@ -28,7 +35,10 @@ import {
   calculateSellingPrice,
   parseShopBaseInput,
   mapNameToCategorySlug,
-  ShopBaseCategoryItem
+  ShopBaseCategoryItem,
+  fetchAllLiveShopBaseProducts,
+  DEFAULT_SHOPBASE_ACCOUNT,
+  DEFAULT_SHOPBASE_PASSWORD
 } from '../../services/shopbaseService';
 
 interface ShopBaseImporterProps {
@@ -50,8 +60,27 @@ export const ShopBaseImporter: React.FC<ShopBaseImporterProps> = ({
 }) => {
   const [activeSubTab, setActiveSubTab] = useState<'curated' | 'category' | 'single' | 'guide'>('curated');
   
-  // Profit margin state (default 15% as requested!)
+  // Reseller Account credentials from user
+  const [accountNumber, setAccountNumber] = useState<string>(DEFAULT_SHOPBASE_ACCOUNT);
+  const [accountPassword, setAccountPassword] = useState<string>(DEFAULT_SHOPBASE_PASSWORD);
+  const [showPassword, setShowPassword] = useState(false);
+  const [autoSyncEnabled, setAutoSyncEnabled] = useState(true);
+
+  // Profit margin state (10% - 15% as requested!)
   const [profitMargin, setProfitMargin] = useState<number>(15);
+
+  // Mass Sync All Products State
+  const [isMassSyncing, setIsMassSyncing] = useState(false);
+  const [massSyncProgress, setMassSyncProgress] = useState<{
+    loadedCount: number;
+    currentCategory: string;
+    totalCategories: number;
+  }>({
+    loadedCount: 0,
+    currentCategory: '',
+    totalCategories: 0,
+  });
+  const [massSyncSuccessMsg, setMassSyncSuccessMsg] = useState('');
 
   // Curated state
   const [curatedList, setCuratedList] = useState<Product[]>([]);
@@ -93,6 +122,36 @@ export const ShopBaseImporter: React.FC<ShopBaseImporterProps> = ({
   const importedCount = products.filter(
     (p) => p.id.startsWith('sbp-') || p.sku?.startsWith('SBP-') || p.brand?.includes('ShopBase')
   ).length;
+
+  // Mass Sync All Products function
+  const handleMassSyncAll = async () => {
+    setIsMassSyncing(true);
+    setMassSyncSuccessMsg('');
+    try {
+      const allFetched = await fetchAllLiveShopBaseProducts(
+        profitMargin,
+        (loadedCount, currentCategory, totalCategories) => {
+          setMassSyncProgress({
+            loadedCount,
+            currentCategory,
+            totalCategories,
+          });
+        }
+      );
+
+      const unimported = allFetched.filter((p) => !existingProductIds.has(p.id));
+      if (unimported.length > 0) {
+        addMultipleProducts(unimported);
+        setMassSyncSuccessMsg(`সফল হয়েছে! ShopBaseBD থেকে নতুন ${unimported.length}টি পণ্য সফলভাবে ওয়েবসাইটে আপলোড করা হয়েছে (${profitMargin}% লাভ সহ)।`);
+      } else {
+        setMassSyncSuccessMsg(`সকল পণ্য ইতোমধ্যে আপনার ওয়েবসাইটে যুক্ত রয়েছে (${allFetched.length}টি পণ্য যাচাইকৃত)।`);
+      }
+    } catch (err) {
+      console.error('Mass sync failed:', err);
+    } finally {
+      setIsMassSyncing(false);
+    }
+  };
 
   // Initialize curated list with 15% profit
   useEffect(() => {
@@ -280,7 +339,131 @@ export const ShopBaseImporter: React.FC<ShopBaseImporterProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Top Banner & Margin Controller */}
+      {/* Reseller Account Connection Card */}
+      <div className="bg-slate-900 border border-slate-700/80 rounded-2xl p-5 shadow-lg relative overflow-hidden">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
+          <div className="flex items-start sm:items-center gap-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-slate-950 font-black shrink-0 shadow-md">
+              <ShieldCheck className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="text-base sm:text-lg font-black text-white">
+                  ShopBaseBD রিসেলার অ্যাকাউন্ট কানেকশন
+                </h3>
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  সংযুক্ত ও সক্রিয় (Connected)
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 mt-0.5">
+                এই অ্যাকাউন্টের মাধ্যমে আপনার ওয়েবসাইটের পণ্য ও কাস্টমারদের ড্রপশিপিং অর্ডার স্বয়ংক্রিয়ভাবে পরিচালিত হচ্ছে।
+              </p>
+            </div>
+          </div>
+
+          {/* Account Credentials Badge */}
+          <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto bg-slate-950/80 p-3 rounded-xl border border-slate-800">
+            <div>
+              <span className="text-[10px] uppercase font-bold text-slate-500 block">রিসেলার মোবাইল / আইডি:</span>
+              <span className="text-sm font-mono font-bold text-amber-400">{accountNumber}</span>
+            </div>
+
+            <div className="border-l border-slate-800 pl-3">
+              <span className="text-[10px] uppercase font-bold text-slate-500 block">পাসওয়ার্ড:</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-sm font-mono font-bold text-slate-200">
+                  {showPassword ? accountPassword : '••••••••'}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="text-slate-400 hover:text-white p-0.5 transition-colors cursor-pointer"
+                  title={showPassword ? 'পাসওয়ার্ড লুকান' : 'পাসওয়ার্ড দেখুন'}
+                >
+                  {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                </button>
+              </div>
+            </div>
+
+            <a
+              href="https://shopbasebd.com/store/login"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-auto lg:ml-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors border border-slate-700"
+            >
+              <ExternalLink className="w-3 h-3 text-amber-400" />
+              <span>ShopBase ড্যাশবোর্ড</span>
+            </a>
+          </div>
+        </div>
+
+        {/* 1-Click Mass Sync All Products Bar */}
+        <div className="mt-5 pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <Zap className="w-4 h-4 text-amber-400" />
+              <span className="text-xs font-bold text-slate-200">
+                স্বয়ংক্রিয় বাল্ক সিঙ্ক (Auto-Sync All Products):
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-400">
+              এক ক্লিকে ShopBaseBD-এর সমস্ত ক্যাটাগরি স্ক্যান করে নতুন সকল পণ্য আপনার ওয়েবসাইটে যোগ করুন ({profitMargin}% লাভ সহ)।
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleMassSyncAll}
+            disabled={isMassSyncing}
+            className="w-full sm:w-auto px-5 py-2.5 bg-gradient-to-r from-amber-500 via-orange-600 to-indigo-600 hover:from-amber-600 hover:to-indigo-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-lg shadow-orange-600/20 disabled:opacity-50 cursor-pointer shrink-0 transition-all active:scale-95"
+          >
+            {isMassSyncing ? (
+              <>
+                <RefreshCw className="w-4 h-4 animate-spin text-yellow-300" />
+                <span>
+                  স্ক্যান চলছে: {massSyncProgress.currentCategory || 'ডাটা ফেচ হচ্ছে'} ({massSyncProgress.loadedCount}টি পণ্য প্রাপ্ত)...
+                </span>
+              </>
+            ) : (
+              <>
+                <Download className="w-4 h-4 text-yellow-300" />
+                <span>সকল ShopBaseBD প্রোডাক্ট একসাথে অটো-ইমপোর্ট করুন</span>
+              </>
+            )}
+          </button>
+        </div>
+
+        {/* Mass Sync Progress Bar (if active) */}
+        {isMassSyncing && (
+          <div className="mt-3 bg-slate-950 p-3 rounded-xl border border-amber-500/30 space-y-2">
+            <div className="flex items-center justify-between text-[11px]">
+              <span className="text-amber-400 font-bold">
+                ক্যাটাগরি স্ক্যানিং: {massSyncProgress.currentCategory}
+              </span>
+              <span className="text-slate-300 font-mono font-bold">
+                {massSyncProgress.loadedCount} টি প্রোডাক্ট প্রস্তুত
+              </span>
+            </div>
+            <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+              <div 
+                className="bg-gradient-to-r from-amber-400 to-orange-500 h-full transition-all duration-300 animate-pulse"
+                style={{ width: `${Math.min(100, Math.max(15, (massSyncProgress.loadedCount / 500) * 100))}%` }}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Success Alert */}
+        {massSyncSuccessMsg && (
+          <div className="mt-3 p-3 bg-emerald-950/60 border border-emerald-500/40 rounded-xl text-xs text-emerald-200 flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span>{massSyncSuccessMsg}</span>
+          </div>
+        )}
+      </div>
+
+      {/* Profit Margin Controller Banner */}
       <div className="bg-gradient-to-r from-amber-600 via-orange-600 to-indigo-700 text-white rounded-2xl p-6 shadow-xl relative overflow-hidden">
         <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
         
@@ -288,13 +471,13 @@ export const ShopBaseImporter: React.FC<ShopBaseImporterProps> = ({
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-semibold mb-2">
               <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
-              <span>ShopBaseBD ড্রপশিপিং ও রিসিলে কানেক্টর</span>
+              <span>ShopBaseBD ড্রপশিপিং ও প্রাইসিং সিস্টেম</span>
             </div>
             <h2 className="text-2xl font-black tracking-tight">
-              ShopBaseBD থেকে সরাসরি প্রোডাক্ট আপলোড
+              ShopBaseBD পণ্যের বিক্রয়মূল্য ও মার্জিন নির্ধারণ
             </h2>
             <p className="text-orange-100 text-sm mt-1 max-w-xl">
-              পাইকারি হোলসেল রেটে পণ্য নিন, <strong className="text-white underline decoration-yellow-400 font-bold">{profitMargin}% লাভ</strong> যোগ করে সরাসরি OneRoof Mart ওয়েবসাইটে আপলোড করুন। কাস্টমার অর্ডার করলে ShopBaseBD থেকে সরাসরি ডেলিভারি হবে!
+              ShopBaseBD থেকে পাইকারি মূল্যে পণ্য নিয়ে স্বয়ংক্রিয়ভাবে <strong className="text-white underline decoration-yellow-400 font-bold">{profitMargin}% লাভ</strong> যোগ করে আপনার ওয়ানরুফ মার্ট ওয়েবসাইটে বিক্রয়মূল্য সেট করা হচ্ছে।
             </p>
           </div>
 
@@ -311,17 +494,17 @@ export const ShopBaseImporter: React.FC<ShopBaseImporterProps> = ({
             {/* Margin Slider */}
             <input
               type="range"
-              min="5"
-              max="50"
+              min="10"
+              max="25"
               step="1"
               value={profitMargin}
               onChange={(e) => setProfitMargin(parseInt(e.target.value, 10))}
               className="w-full accent-yellow-400 cursor-pointer h-2 bg-white/30 rounded-lg"
             />
 
-            {/* Quick Preset Buttons */}
+            {/* Quick Preset Buttons (10% - 15% as requested!) */}
             <div className="flex items-center gap-1.5 mt-3">
-              {[10, 15, 20, 25, 30].map((preset) => (
+              {[10, 12, 15, 20].map((preset) => (
                 <button
                   key={preset}
                   type="button"
@@ -339,7 +522,15 @@ export const ShopBaseImporter: React.FC<ShopBaseImporterProps> = ({
 
             {/* Live Calculation Example */}
             <div className="mt-3 pt-2 border-t border-white/15 text-[11px] text-orange-100 space-y-0.5">
-              <div className="flex justify-between text-white font-bold border-white/10 pt-0.5">
+              <div className="flex justify-between">
+                <span>হোলসেল পাইকারি মূল্য:</span>
+                <span>৳ {sampleWholesale}</span>
+              </div>
+              <div className="flex justify-between text-yellow-300">
+                <span>আপনার নিট লাভ ({profitMargin}%):</span>
+                <span>+৳ {sampleCalc.profitAmount}</span>
+              </div>
+              <div className="flex justify-between text-white font-bold border-t border-white/10 pt-1 mt-1">
                 <span>ওয়েবসাইটে সেল রেট:</span>
                 <span className="text-yellow-200">৳ {sampleCalc.sellingPrice}</span>
               </div>
@@ -353,7 +544,7 @@ export const ShopBaseImporter: React.FC<ShopBaseImporterProps> = ({
             সাইটে আপলোড করা শপবেইজ পণ্য: <strong className="text-white text-sm">{importedCount} টি</strong>
           </div>
           <div className="ml-auto text-yellow-200 font-medium">
-            ✓ অটোমেটিক ১৫% লাভ হিসাব সক্রিয়
+            ✓ অটোমেটিক {profitMargin}% লাভ হিসাব সক্রিয়
           </div>
         </div>
       </div>

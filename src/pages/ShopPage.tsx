@@ -33,6 +33,12 @@ export const ShopPage: React.FC = () => {
 
   const [layout, setLayout] = useState<'grid' | 'list'>('grid');
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+  const [displayCount, setDisplayCount] = useState<number>(36);
+
+  // Reset pagination when category, subcategory, search, or filters change
+  useEffect(() => {
+    setDisplayCount(36);
+  }, [filterState]);
 
   // Smooth scroll to top when category or subcategory is clicked
   useEffect(() => {
@@ -515,16 +521,35 @@ export const ShopPage: React.FC = () => {
               ))}
             </div>
           ) : filteredProducts.length > 0 ? (
-            <div
-              className={
-                layout === 'grid'
-                  ? 'grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-3 gap-3 sm:gap-5'
-                  : 'space-y-3'
-              }
-            >
-              {filteredProducts.map((product, idx) => (
-                <ProductCard key={product.id} product={product} layout={layout} />
-              ))}
+            <div className="space-y-6">
+              <div
+                className={
+                  layout === 'grid'
+                    ? 'grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-3 gap-3 sm:gap-5'
+                    : 'space-y-3'
+                }
+              >
+                {filteredProducts.slice(0, displayCount).map((product) => (
+                  <ProductCard key={product.id} product={product} layout={layout} />
+                ))}
+              </div>
+
+              {/* Load More Pagination for Large Catalog */}
+              {filteredProducts.length > displayCount && (
+                <div className="pt-6 pb-2 text-center space-y-3 border-t border-slate-100">
+                  <p className="text-xs text-slate-500 font-medium">
+                    {language === 'bn'
+                      ? `মোট ${toBengaliNumber(filteredProducts.length)} টির মধ্যে ${toBengaliNumber(Math.min(displayCount, filteredProducts.length))} টি পণ্য প্রদর্শিত হচ্ছে`
+                      : `Showing ${Math.min(displayCount, filteredProducts.length)} of ${filteredProducts.length} products`}
+                  </p>
+                  <button
+                    onClick={() => setDisplayCount((prev) => prev + 36)}
+                    className="inline-flex items-center gap-2 px-8 py-3 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md shadow-emerald-600/20 transition-all cursor-pointer"
+                  >
+                    <span>{language === 'bn' ? 'আরো পণ্য দেখুন (+৩৬ টি)' : 'Load More Products (+36)'}</span>
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <div className="bg-white rounded-3xl p-12 text-center border border-slate-200/80 space-y-4">

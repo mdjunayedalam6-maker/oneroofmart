@@ -624,8 +624,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               remoteProducts.filter((p) => !deletedIds.has(p.id))
             );
             setProducts(cleanRemote);
-            safeLocalStorage.setItem('oneroof_products', JSON.stringify(cleanRemote));
             idbSet('oneroof_cached_products', cleanRemote).catch(() => {});
+            try {
+              safeLocalStorage.setItem('oneroof_products', JSON.stringify(cleanRemote.slice(0, 200)));
+            } catch (_) {}
 
             // Auto-clean any products in Supabase that were previously marked as deleted
             const ghostIds = remoteProducts

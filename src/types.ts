@@ -39,6 +39,16 @@ export interface SiteSettings {
   appDownloadUrl?: string; // App / Software download/install link
   appNameBn?: string; // e.g. OneRoof মোবাইল অ্যাপ
   appSubtitleBn?: string; // e.g. সহজ ও দ্রুত কেনাকাটার জন্য ডাউনলোড করুন
+  shopbaseConfig?: {
+    connected: boolean;
+    accountNumber: string;
+    password?: string;
+    profitMargin: number; // 10 to 15
+    autoSync: boolean;
+    autoForwardOrders: boolean;
+    lastSyncTime?: string;
+    totalSyncedProducts?: number;
+  };
 }
 
 export interface AdminBannerSlide {
@@ -160,7 +170,7 @@ export interface OrderItem {
   selectedColor?: string;
 }
 
-export type OrderStatus = 'placed' | 'processing' | 'shipped' | 'out_for_delivery' | 'delivered' | 'cancelled';
+export type OrderStatus = 'placed' | 'processing' | 'shipped' | 'out_for_delivery' | 'delivered' | 'cancelled' | 'forwarded_to_shopbase';
 
 export interface Order {
   id: string;
@@ -189,6 +199,15 @@ export interface Order {
   userId?: string;
   customerEmail?: string;
   customerPhone?: string;
+  shopbaseDropship?: {
+    forwarded: boolean;
+    forwardedAt?: string;
+    resellerAccount?: string;
+    wholesaleCost?: number;
+    expectedProfit?: number;
+    shopbaseOrderId?: string;
+    notes?: string;
+  };
 }
 
 export interface User {

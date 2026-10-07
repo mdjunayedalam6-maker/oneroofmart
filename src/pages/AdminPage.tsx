@@ -34,13 +34,15 @@ import {
   Check,
   Smartphone,
   ExternalLink,
-  CheckSquare
+  CheckSquare,
+  Send
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { Product, Category, Order, OrderStatus, AdminBannerSlide } from '../types';
 import { ProductEditModal } from '../components/admin/ProductEditModal';
 import { OrderInvoiceModal } from '../components/admin/OrderInvoiceModal';
 import { ShopBaseImporter } from '../components/admin/ShopBaseImporter';
+import { ShopBaseDropshipModal } from '../components/admin/ShopBaseDropshipModal';
 import { compressImageFile } from '../utils/imageCompressor';
 
 export const AdminPage: React.FC = () => {
@@ -97,6 +99,7 @@ export const AdminPage: React.FC = () => {
   const [orderSearch, setOrderSearch] = useState('');
   const [orderStatusFilter, setOrderStatusFilter] = useState<'all' | OrderStatus>('all');
   const [selectedInvoiceOrder, setSelectedInvoiceOrder] = useState<Order | null>(null);
+  const [selectedDropshipOrder, setSelectedDropshipOrder] = useState<Order | null>(null);
 
   // Category management state
   const [newCatNameBn, setNewCatNameBn] = useState('');
@@ -971,7 +974,7 @@ export const AdminPage: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
-                {(['all', 'placed', 'processing', 'shipped', 'delivered', 'cancelled'] as const).map((status) => (
+                {(['all', 'placed', 'processing', 'shipped', 'delivered', 'forwarded_to_shopbase', 'cancelled'] as const).map((status) => (
                   <button
                     key={status}
                     onClick={() => setOrderStatusFilter(status)}
@@ -981,7 +984,11 @@ export const AdminPage: React.FC = () => {
                         : 'bg-slate-900 hover:bg-slate-700 text-slate-300'
                     }`}
                   >
-                    {status === 'all' ? 'সকল অর্ডার' : status}
+                    {status === 'all' 
+                      ? 'সকল অর্ডার' 
+                      : status === 'forwarded_to_shopbase'
+                      ? 'ShopBase ফরওয়ার্ডকৃত'
+                      : status}
                   </button>
                 ))}
               </div>
@@ -1125,6 +1132,7 @@ export const AdminPage: React.FC = () => {
                         >
                           <option value="placed">অর্ডার গৃহীত (Placed)</option>
                           <option value="processing">প্যাকিং চলছে (Processing)</option>
+                          <option value="forwarded_to_shopbase">ShopBase-এ ফরওয়ার্ডকৃত (Forwarded)</option>
                           <option value="shipped">শিপড হয়েছে (Shipped)</option>
                           <option value="delivered">ডেলিভারি সম্পন্ন (Delivered)</option>
                           <option value="cancelled">অর্ডার বাতিল (Cancelled)</option>
@@ -1145,7 +1153,18 @@ export const AdminPage: React.FC = () => {
                         </button>
                       </div>
 
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        {/* ShopBase Dropship Forward Button */}
+                        <button
+                          type="button"
+                          onClick={() => setSelectedDropshipOrder(ord)}
+                          className="px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-slate-950 font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                          title="ShopBaseBD ড্রপশিপ পার্সেল বুকিং ও ফরোয়ার্ড করুন"
+                        >
+                          <Send className="w-3.5 h-3.5" />
+                          <span>ShopBase-এ ড্রপশিপ পাঠান</span>
+                        </button>
+
                         <button
                           type="button"
                           onClick={() => setSelectedInvoiceOrder(ord)}
@@ -3358,6 +3377,15 @@ export const AdminPage: React.FC = () => {
       <OrderInvoiceModal
         order={selectedInvoiceOrder}
         onClose={() => setSelectedInvoiceOrder(null)}
+      />
+
+      {/* ShopBaseBD Dropship Order Forwarding Modal */}
+      <ShopBaseDropshipModal
+        order={selectedDropshipOrder}
+        onClose={() => setSelectedDropshipOrder(null)}
+        formatPrice={formatPrice}
+        onMarkForwarded={(id) => updateOrderStatus(id, 'forwarded_to_shopbase')}
+        resellerAccount={siteSettings.shopbaseConfig?.accountNumber || '01929637253'}
       />
 
       {/* Category Edit Modal */}

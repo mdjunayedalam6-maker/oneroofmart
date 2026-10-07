@@ -401,7 +401,7 @@ export async function fetchProductsFromSupabase(): Promise<Product[] | null> {
     const allProducts: Product[] = [];
     const step = 1000;
     let from = 0;
-    const maxPages = 5; // Up to 5000 products
+    const maxPages = 20; // Up to 20,000 products support
 
     for (let page = 0; page < maxPages; page++) {
       const query = supabase
