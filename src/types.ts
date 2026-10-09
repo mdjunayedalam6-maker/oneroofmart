@@ -39,11 +39,12 @@ export interface SiteSettings {
   appDownloadUrl?: string; // App / Software download/install link
   appNameBn?: string; // e.g. OneRoof মোবাইল অ্যাপ
   appSubtitleBn?: string; // e.g. সহজ ও দ্রুত কেনাকাটার জন্য ডাউনলোড করুন
+  globalProfitMargin?: number; // Universal profit margin % across all products e.g. 15
   shopbaseConfig?: {
     connected: boolean;
     accountNumber: string;
     password?: string;
-    profitMargin: number; // 10 to 15
+    profitMargin: number; // profit margin %
     autoSync: boolean;
     autoForwardOrders: boolean;
     lastSyncTime?: string;

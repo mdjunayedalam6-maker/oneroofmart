@@ -750,11 +750,11 @@ export function convertShopBaseToProduct(
     sku: `SBP-${item.pid}`,
     titleBn: `${item.name}`,
     titleEn: item.name,
-    descriptionBn: descriptionText || `অরিজিনাল ShopBaseBD ভেরিফায়েড পণ্য। প্রিমিয়াম এক্সপোর্ট কোয়ালিটি ফ্যাব্রিক। ১০০% অথেনটিক এবং দ্রুত ক্যাশ অন ডেলিভারি সুবিধা সহ। ৭ দিনের সহজ এক্সচেঞ্জ ও রিটার্ন গ্যারান্টি। সাইজ: M, L, XL, XXL।`,
-    descriptionEn: descriptionText || `Verified premium export quality apparel sourced from ShopBaseBD wholesale catalog. 100% brand new, authentic fabrics with comfortable slim and regular fitting.`,
+    descriptionBn: descriptionText || `১০০% প্রিমিয়াম কোয়ালিটি OneRoof Mart এক্সক্লুসিভ পণ্য। আধুনিক ডিজাইন ও আরামদায়ক এক্সপোর্ট ফ্যাব্রিক। সারাদেশে দ্রুত ক্যাশ অন ডেলিভারি এবং ৭ দিনের সহজ রিটার্ন ও এক্সচেঞ্জ গ্যারান্টি সহ। সাইজ: M, L, XL, XXL।`,
+    descriptionEn: descriptionText || `100% premium export quality apparel by OneRoof Mart. Authentic comfortable fabrics with stylish fitting and fast nationwide cash on delivery.`,
     category: categorySlug,
     subcategory: categoryNameBn,
-    brand: 'ShopBaseBD Official',
+    brand: 'OneRoof Mart',
     price: sellingPrice,
     originalPrice: originalPrice,
     discountPercentage: discountPercentage > 0 ? discountPercentage : 15,
@@ -764,7 +764,7 @@ export function convertShopBaseToProduct(
     stock: 50,
     isFeatured: true,
     isNewArrival: true,
-    tags: ['shopbase', categorySlug, 'reseller', 'trending', 'wholesale-direct'],
+    tags: ['oneroof', categorySlug, 'premium', 'trending'],
     sizes: sizes,
     variants: [
       {
@@ -773,12 +773,10 @@ export function convertShopBaseToProduct(
       },
     ],
     specifications: {
-      'সোর্স / উৎস': 'ShopBaseBD Official Reseller',
-      'পাইকারি মূল্য (হোলসেল)': `৳ ${wholesale}`,
-      'আপনার নিট প্রফিট (১৫%)': `৳ ${profitAmount}`,
-      'কোয়ালিটি': 'Export Standard Quality',
-      'ওয়ারেন্টি': '৭ দিনের রিটার্ন ও রিপ্লেসমেন্ট',
-      'ডেলিভারি': 'সারাদেশে হোম ডেলিভারি (২-৪ দিন)',
+      'ব্র্যান্ড': 'OneRoof Mart',
+      'কোয়ালিটি': '১০০% প্রিমিয়াম এক্সপোর্ট স্ট্যান্ডার্ড',
+      'ডেলিভারি': 'সারাদেশে ক্যাশ অন ডেলিভারি (২-৪ দিন)',
+      'ওয়ারেন্টি': '৭ দিনের রিটার্ন ও রিপ্লেসমেন্ট গ্যারান্টি',
     },
     reviews: [
       {

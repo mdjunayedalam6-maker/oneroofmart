@@ -5,6 +5,10 @@
   "cleanUrls": true,
   "rewrites": [
     {
+      "source": "/api/shopbase/:match*",
+      "destination": "https://shopbasebd.com/:match*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

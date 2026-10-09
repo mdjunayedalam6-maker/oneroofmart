@@ -78,6 +78,9 @@ export const AdminPage: React.FC = () => {
     checkSupabaseConnection,
     syncAllToSupabase,
     supabaseSetupSql,
+    globalProfitMargin,
+    updateGlobalProfitMargin,
+    enforceWhiteLabelPurge,
     supabaseUrl
   } = useApp();
 
@@ -748,7 +751,7 @@ export const AdminPage: React.FC = () => {
               badge: pendingOrdersCount > 0 ? pendingOrdersCount : undefined 
             },
             { id: 'products', label: 'প্রডাক্ট আপলোড ও ম্যানেজমেন্ট', icon: ShoppingBag, count: products.length },
-            { id: 'shopbase', label: '🛍️ ShopBaseBD (১৫% লাভ)', icon: Sparkles, badge: 'অটো' },
+            { id: 'shopbase', label: '💰 প্রফিট মার্জিন ও অটোমেশন', icon: Sparkles, badge: `${globalProfitMargin || 15}% লাভ` },
             { id: 'categories', label: 'ক্যাটাগরি ম্যানেজমেন্ট', icon: Layers, count: categories.length },
             { id: 'design', label: 'কালার, থিম ও ডিজাইন', icon: Palette },
             { id: 'banners', label: 'ব্যানার স্লাইডার কন্ট্রোল', icon: ImageIcon },

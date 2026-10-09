@@ -25,6 +25,7 @@ import {
   Send
 } from 'lucide-react';
 import { Product, Category } from '../../types';
+import { useApp } from '../../context/AppContext';
 import { 
   POPULAR_SHOPBASE_CATEGORIES, 
   CURATED_SHOPBASE_PRODUCTS,
@@ -66,8 +67,29 @@ export const ShopBaseImporter: React.FC<ShopBaseImporterProps> = ({
   const [showPassword, setShowPassword] = useState(false);
   const [autoSyncEnabled, setAutoSyncEnabled] = useState(true);
 
-  // Profit margin state (10% - 15% as requested!)
-  const [profitMargin, setProfitMargin] = useState<number>(15);
+  const { globalProfitMargin, updateGlobalProfitMargin, enforceWhiteLabelPurge } = useApp();
+  // Profit margin state (customizable dynamically from admin panel!)
+  const [profitMargin, setProfitMargin] = useState<number>(() => globalProfitMargin || 15);
+  const [isApplyingGlobalMargin, setIsApplyingGlobalMargin] = useState(false);
+  const [isPurgingSupplierReferences, setIsPurgingSupplierReferences] = useState(false);
+
+  const handleApplyMarginToAll = async () => {
+    setIsApplyingGlobalMargin(true);
+    try {
+      await updateGlobalProfitMargin(profitMargin);
+    } finally {
+      setIsApplyingGlobalMargin(false);
+    }
+  };
+
+  const handlePurgeSupplierInfo = async () => {
+    setIsPurgingSupplierReferences(true);
+    try {
+      await enforceWhiteLabelPurge();
+    } finally {
+      setIsPurgingSupplierReferences(false);
+    }
+  };
 
   // Mass Sync All Products State
   const [isMassSyncing, setIsMassSyncing] = useState(false);
@@ -482,37 +504,50 @@ export const ShopBaseImporter: React.FC<ShopBaseImporterProps> = ({
           </div>
 
           {/* Profit Margin Control Box */}
-          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-4 min-w-[280px]">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-medium text-orange-100 flex items-center gap-1.5">
-                <Percent className="w-3.5 h-3.5 text-yellow-300" />
-                আপনার লাভের মার্জিন (% লাভ):
+          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-5 min-w-[320px] max-w-md shadow-xl">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-semibold text-orange-100 flex items-center gap-1.5">
+                <Percent className="w-4 h-4 text-yellow-300" />
+                আপনার নির্ধারিত লাভের মার্জিন:
               </span>
-              <span className="text-lg font-black text-yellow-300">{profitMargin}% লাভ</span>
+              <div className="flex items-center gap-1">
+                <input
+                  type="number"
+                  min="1"
+                  max="100"
+                  value={profitMargin}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value, 10);
+                    if (!isNaN(val)) setProfitMargin(Math.max(1, Math.min(100, val)));
+                  }}
+                  className="w-16 px-2 py-1 bg-black/40 border border-yellow-300/40 rounded-lg text-yellow-300 font-black text-right text-base outline-none focus:border-yellow-400"
+                />
+                <span className="text-yellow-300 font-bold text-sm">% লাভ</span>
+              </div>
             </div>
 
             {/* Margin Slider */}
             <input
               type="range"
-              min="10"
-              max="25"
+              min="5"
+              max="50"
               step="1"
               value={profitMargin}
               onChange={(e) => setProfitMargin(parseInt(e.target.value, 10))}
               className="w-full accent-yellow-400 cursor-pointer h-2 bg-white/30 rounded-lg"
             />
 
-            {/* Quick Preset Buttons (10% - 15% as requested!) */}
-            <div className="flex items-center gap-1.5 mt-3">
-              {[10, 12, 15, 20].map((preset) => (
+            {/* Quick Preset Buttons */}
+            <div className="grid grid-cols-6 gap-1 mt-3">
+              {[5, 10, 12, 15, 20, 25].map((preset) => (
                 <button
                   key={preset}
                   type="button"
                   onClick={() => setProfitMargin(preset)}
-                  className={`flex-1 text-xs py-1 rounded font-bold transition-all ${
+                  className={`text-xs py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
                     profitMargin === preset
-                      ? 'bg-yellow-400 text-neutral-900 shadow-sm'
-                      : 'bg-white/10 text-white hover:bg-white/20'
+                      ? 'bg-yellow-400 text-neutral-900 shadow-md font-black scale-105'
+                      : 'bg-white/15 text-white hover:bg-white/25'
                   }`}
                 >
                   {preset}%
@@ -521,21 +556,68 @@ export const ShopBaseImporter: React.FC<ShopBaseImporterProps> = ({
             </div>
 
             {/* Live Calculation Example */}
-            <div className="mt-3 pt-2 border-t border-white/15 text-[11px] text-orange-100 space-y-0.5">
-              <div className="flex justify-between">
+            <div className="mt-3 p-3 bg-black/25 rounded-xl border border-white/10 text-xs text-orange-100 space-y-1">
+              <div className="flex justify-between text-slate-300">
                 <span>হোলসেল পাইকারি মূল্য:</span>
-                <span>৳ {sampleWholesale}</span>
+                <span className="font-mono">৳ {sampleWholesale}</span>
               </div>
-              <div className="flex justify-between text-yellow-300">
+              <div className="flex justify-between text-yellow-300 font-bold">
                 <span>আপনার নিট লাভ ({profitMargin}%):</span>
-                <span>+৳ {sampleCalc.profitAmount}</span>
+                <span className="font-mono">+৳ {sampleCalc.profitAmount}</span>
               </div>
-              <div className="flex justify-between text-white font-bold border-t border-white/10 pt-1 mt-1">
-                <span>ওয়েবসাইটে সেল রেট:</span>
-                <span className="text-yellow-200">৳ {sampleCalc.sellingPrice}</span>
+              <div className="flex justify-between text-white font-black border-t border-white/15 pt-1 mt-1 text-sm">
+                <span>গ্রাহকদের বিক্রয়মূল্য:</span>
+                <span className="text-yellow-200 font-mono">৳ {sampleCalc.sellingPrice}</span>
               </div>
             </div>
+
+            {/* 1-Click Apply to ALL Products Button */}
+            <button
+              type="button"
+              onClick={handleApplyMarginToAll}
+              disabled={isApplyingGlobalMargin}
+              className="w-full mt-3 py-2.5 px-4 bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-slate-950 font-black text-xs rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-black/30 transition-all active:scale-95 disabled:opacity-60 cursor-pointer"
+            >
+              {isApplyingGlobalMargin ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin text-slate-950" />
+                  <span>সকল প্রোডাক্টে লাভ % আপডেট হচ্ছে...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4 text-slate-950" />
+                  <span>সকল ১১,৮৯৬+ প্রোডাক্টে এই {profitMargin}% লাভ প্রয়োগ করুন</span>
+                </>
+              )}
+            </button>
           </div>
+        </div>
+
+        {/* White-label branding guarantee card */}
+        <div className="mt-6 p-4 bg-black/30 border border-white/15 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-xs text-orange-100">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 font-bold text-white text-sm">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <span>১০০% হোয়াইট-লেবেল ওয়ানরুফ মার্ট (OneRoof Mart) ব্র্যান্ডিং সক্রিয়</span>
+            </div>
+            <p className="text-slate-300 text-[11px] leading-relaxed">
+              গ্রাহকদের কোনো অবস্থাতেই ShopBase BD-এর নাম, সোর্স লিংক, পাইকারি মূল্য বা রিসেলার ফোন নম্বর দেখানো হয় না। সকল পণ্য আপনার নিজস্ব স্টোর ব্র্যান্ডের নামে বিক্রি হচ্ছে।
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={handlePurgeSupplierInfo}
+            disabled={isPurgingSupplierReferences}
+            className="px-4 py-2 bg-white/15 hover:bg-white/25 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 border border-white/20 transition-all active:scale-95 disabled:opacity-60 cursor-pointer whitespace-nowrap shrink-0"
+          >
+            {isPurgingSupplierReferences ? (
+              <RefreshCw className="w-3.5 h-3.5 animate-spin text-yellow-300" />
+            ) : (
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-300" />
+            )}
+            <span>ব্র্যান্ড ও বিবরণী রিফ্রেশ করুন</span>
+          </button>
         </div>
 
         {/* Stats strip */}

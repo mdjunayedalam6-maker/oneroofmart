@@ -49,10 +49,13 @@ export const ShopPage: React.FC = () => {
     } catch (_) {}
   }, [filterState.category, filterState.subcategory]);
 
-  // Extract all unique brands
+  // Extract all unique brands (strictly white-labeled)
   const allBrands = useMemo(() => {
     const brandsSet = new Set<string>();
-    products.forEach((p) => brandsSet.add(p.brand));
+    products.forEach((p) => {
+      const b = (!p.brand || p.brand.toLowerCase().includes('shopbase')) ? 'OneRoof Mart' : p.brand;
+      if (b) brandsSet.add(b);
+    });
     return Array.from(brandsSet);
   }, [products]);
 

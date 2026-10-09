@@ -29,6 +29,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   appDownloadUrl: '',
   appNameBn: 'OneRoof মোবাইল অ্যাপ',
   appSubtitleBn: 'সহজ ও দ্রুত কেনাকাটায় সরাসরি ডাউনলোড ও ইনস্টল করুন',
+  globalProfitMargin: 15,
   shopbaseConfig: {
     connected: true,
     accountNumber: '01929637253',
@@ -37,7 +38,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
     autoSync: true,
     autoForwardOrders: true,
     lastSyncTime: 'আজকের তারিখে সফলভাবে সংযুক্ত',
-    totalSyncedProducts: 1404,
+    totalSyncedProducts: 11902,
   },
 };
 

@@ -433,6 +433,16 @@ export async function fetchProductsFromSupabase(): Promise<Product[] | null> {
           if (row.subcategory) item.subcategory = row.subcategory;
           if (row.stock !== undefined && row.stock !== null) item.stock = Number(row.stock);
           if (item.id) {
+            // White-label safety: enforce OneRoof Mart brand and supplier price fields
+            if (!item.brand || item.brand.toLowerCase().includes('shopbase')) {
+              item.brand = 'OneRoof Mart';
+            }
+            if (!item.wholesalePrice) {
+              item.wholesalePrice = item.price;
+            }
+            if (!item.profitMarginPercent) {
+              item.profitMarginPercent = 15;
+            }
             allProducts.push(item);
           }
         }
@@ -451,6 +461,71 @@ export async function fetchProductsFromSupabase(): Promise<Product[] | null> {
   } catch (e) {
     console.warn('Supabase fetchProducts notice:', e);
     return null;
+  }
+}
+
+// 2.5 Update profit margin across all products in Supabase
+export async function updateAllProductsProfitMarginInSupabase(
+  newMargin: number,
+  onProgress?: (processed: number, total: number) => void
+): Promise<boolean> {
+  try {
+    const validMargin = Math.max(1, Math.min(100, Math.round(newMargin)));
+    const step = 300;
+    let from = 0;
+    let processed = 0;
+
+    while (true) {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .order('id', { ascending: true })
+        .range(from, from + step - 1);
+
+      if (error || !data || data.length === 0) break;
+
+      const updatedBatch = data.map((row) => {
+        const item: Product = (row.data && typeof row.data === 'object') ? { ...(row.data as Product) } : ({} as Product);
+        const wholesale = Number(item.wholesalePrice || row.price || 300);
+        const retailPrice = Math.round(wholesale * (1 + validMargin / 100));
+        const originalPrice = Math.max(
+          Number(row.original_price || retailPrice * 1.3),
+          Math.round(retailPrice * 1.25)
+        );
+
+        item.wholesalePrice = wholesale;
+        item.profitMarginPercent = validMargin;
+        item.price = retailPrice;
+        item.originalPrice = originalPrice;
+        item.brand = 'OneRoof Mart';
+
+        return {
+          id: row.id,
+          title_bn: row.title_bn,
+          title_en: row.title_en,
+          price: retailPrice,
+          original_price: originalPrice,
+          category: row.category,
+          subcategory: row.subcategory,
+          stock: row.stock || 50,
+          data: item,
+          updated_at: new Date().toISOString(),
+        };
+      });
+
+      const { error: upsertErr } = await supabase.from('products').upsert(updatedBatch);
+      if (!upsertErr) {
+        processed += updatedBatch.length;
+        if (onProgress) onProgress(processed, 11902);
+      }
+
+      if (data.length < step) break;
+      from += step;
+    }
+    return true;
+  } catch (e) {
+    console.warn('Update margin exception:', e);
+    return false;
   }
 }
 

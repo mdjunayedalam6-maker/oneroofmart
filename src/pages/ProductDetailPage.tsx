@@ -17,7 +17,12 @@ import {
   MessageSquare,
   Layers,
   Palette,
-  X
+  X,
+  Tag,
+  Copy,
+  RotateCcw,
+  CheckCircle2,
+  ShieldAlert
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { ProductCard } from '../components/ProductCard';
@@ -78,7 +83,9 @@ export const ProductDetailPage: React.FC = () => {
   const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [selectedColor, setSelectedColor] = useState<string>('');
-  const [activeTab, setActiveTab] = useState<'specs' | 'reviews'>('specs');
+  const [activeTab, setActiveTab] = useState<'specs' | 'returns' | 'reviews'>('specs');
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
 
   // Review Form State
   const [reviewRating, setReviewRating] = useState(5);
@@ -140,6 +147,7 @@ export const ProductDetailPage: React.FC = () => {
 
   const isSaved = isInWishlist(selectedProduct.id);
   const title = language === 'bn' ? selectedProduct.titleBn : selectedProduct.titleEn;
+  const displayBrand = (!selectedProduct.brand || selectedProduct.brand.toLowerCase().includes('shopbase')) ? 'OneRoof Mart' : selectedProduct.brand;
 
   // Safe reviews and specifications fallback
   const productReviews = React.useMemo(() => {
@@ -169,10 +177,14 @@ export const ProductDetailPage: React.FC = () => {
   const description = React.useMemo(() => {
     if (!rawDescription) return '';
     const sensitiveTerms = [
-      'সোর্স', 'উৎস', 'পাইকারি রেট', 'হোলসেল রেট', 'আপনার লাভ', 'লাভ', 
-      'Wholesale Price', 'Profit'
+      'সোর্স', 'উৎস', 'পাইকারি রেট', 'পাইকারি মূল্য', 'হোলসেল রেট', 'হোলসেল', 'আপনার লাভ', 'লাভ', 
+      'Wholesale Price', 'Profit', 'রিসেলার একাউন্ট', '01929637253'
     ];
     let cleaned = rawDescription;
+    cleaned = cleaned.replace(/ShopBase BD পণ্য/gi, 'OneRoof Mart এক্সক্লুসিভ পণ্য');
+    cleaned = cleaned.replace(/ShopBase BD/gi, 'OneRoof Mart');
+    cleaned = cleaned.replace(/ShopBaseBD Official/gi, 'OneRoof Official');
+    cleaned = cleaned.replace(/ShopBase/gi, 'OneRoof');
     sensitiveTerms.forEach(term => {
       const regex = new RegExp(`${term}.*?(\\n|$)`, 'gi');
       cleaned = cleaned.replace(regex, '');
@@ -204,13 +216,34 @@ export const ProductDetailPage: React.FC = () => {
     setCurrentPage('checkout');
   };
 
-  const handleShare = () => {
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(window.location.href);
+  const productShareUrl = useMemo(() => {
+    if (typeof window === 'undefined' || !selectedProduct) return '';
+    return `${window.location.origin}/?product=${encodeURIComponent(selectedProduct.id)}`;
+  }, [selectedProduct]);
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title,
+          text: `${title} - OneRoof Mart থেকে সহজে অর্ডার করুন`,
+          url: productShareUrl,
+        });
+        return;
+      } catch (_) {}
+    }
+    setIsShareModalOpen(true);
+  };
+
+  const copyProductLink = () => {
+    if (navigator.clipboard && productShareUrl) {
+      navigator.clipboard.writeText(productShareUrl);
+      setCopiedLink(true);
       addToast(
-        language === 'bn' ? 'পণ্যটির লিংক কপি করা হয়েছে!' : 'Product link copied to clipboard!',
+        language === 'bn' ? 'পণ্যটির সরাসরি লিংক কপি করা হয়েছে!' : 'Product direct link copied to clipboard!',
         'success'
       );
+      setTimeout(() => setCopiedLink(false), 3000);
     }
   };
 
@@ -331,13 +364,26 @@ export const ProductDetailPage: React.FC = () => {
         <div className="lg:col-span-7 flex flex-col justify-between">
           <div className="space-y-4">
             {/* Brand & SKU */}
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-[#003882] uppercase bg-blue-50 px-2.5 py-1 rounded-md tracking-wider">
-                {selectedProduct.brand}
+            <div className="flex items-center justify-between gap-2 flex-wrap">
+              <span className="text-xs font-bold text-[#003882] uppercase bg-blue-50 border border-blue-200/60 px-3 py-1 rounded-lg tracking-wider">
+                {displayBrand}
               </span>
-              <span className="text-xs text-slate-400">
-                {selectedProduct.sku ? `SKU: ${selectedProduct.sku.toUpperCase()}` : `ID: ${selectedProduct.id.toUpperCase()}`}
-              </span>
+              <div className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1 rounded-lg text-xs font-mono font-medium border border-slate-200 transition-colors">
+                <span>SKU: {selectedProduct.sku ? selectedProduct.sku.toUpperCase() : `SBP-${selectedProduct.id.replace(/\D/g, '') || selectedProduct.id.toUpperCase()}`}</span>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const skuCode = selectedProduct.sku ? selectedProduct.sku.toUpperCase() : `SBP-${selectedProduct.id.replace(/\D/g, '') || selectedProduct.id.toUpperCase()}`;
+                    navigator.clipboard?.writeText(skuCode);
+                    addToast(language === 'bn' ? `SKU (${skuCode}) কপি করা হয়েছে` : `SKU (${skuCode}) copied`, 'info');
+                  }}
+                  className="text-slate-400 hover:text-slate-900 transition-colors p-0.5 rounded cursor-pointer"
+                  title="Copy SKU"
+                >
+                  <Copy className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
 
             {/* Title */}
@@ -378,9 +424,11 @@ export const ProductDetailPage: React.FC = () => {
             </div>
 
             {/* Description Short */}
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              {description}
-            </p>
+            <div className="p-3.5 bg-slate-50/90 rounded-2xl border border-slate-200/80">
+              <p className="text-xs sm:text-sm text-slate-700 leading-relaxed whitespace-pre-line">
+                {description}
+              </p>
+            </div>
 
             {/* Size Selector */}
             {availableSizes.length > 0 && (
@@ -594,10 +642,10 @@ export const ProductDetailPage: React.FC = () => {
 
       {/* Tabs: Specifications & Customer Reviews */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm">
-        <div className="flex items-center gap-4 border-b border-slate-200 pb-4 mb-6">
+        <div className="flex items-center gap-3 sm:gap-6 border-b border-slate-200 pb-4 mb-6 overflow-x-auto">
           <button
             onClick={() => setActiveTab('specs')}
-            className={`text-sm sm:text-base font-bold pb-2 relative transition-colors ${
+            className={`text-sm sm:text-base font-bold pb-2 relative transition-colors whitespace-nowrap ${
               activeTab === 'specs'
                 ? 'text-emerald-700 border-b-2 border-emerald-600'
                 : 'text-slate-500 hover:text-slate-800'
@@ -606,8 +654,19 @@ export const ProductDetailPage: React.FC = () => {
             {t.specifications}
           </button>
           <button
+            onClick={() => setActiveTab('returns')}
+            className={`text-sm sm:text-base font-bold pb-2 relative transition-colors whitespace-nowrap flex items-center gap-1.5 ${
+              activeTab === 'returns'
+                ? 'text-emerald-700 border-b-2 border-emerald-600'
+                : 'text-slate-500 hover:text-slate-800'
+            }`}
+          >
+            <RotateCcw className="w-4 h-4" />
+            <span>{language === 'bn' ? 'রিটার্ন ও রিপ্লেসমেন্ট নিয়মাবলী' : 'Return Policy'}</span>
+          </button>
+          <button
             onClick={() => setActiveTab('reviews')}
-            className={`text-sm sm:text-base font-bold pb-2 relative transition-colors flex items-center gap-1.5 ${
+            className={`text-sm sm:text-base font-bold pb-2 relative transition-colors whitespace-nowrap flex items-center gap-1.5 ${
               activeTab === 'reviews'
                 ? 'text-emerald-700 border-b-2 border-emerald-600'
                 : 'text-slate-500 hover:text-slate-800'
@@ -622,35 +681,107 @@ export const ProductDetailPage: React.FC = () => {
           </button>
         </div>
 
-        {/* Tab 1: Specifications */}
+        {/* Tab 1: Specifications & Description */}
         {activeTab === 'specs' && (
           <div className="space-y-6">
-            {Object.keys(productSpecifications).length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {Object.entries(productSpecifications)
-                  .filter(([key]) => {
-                    const k = key.toLowerCase();
-                    const forbidden = ['সোর্স', 'উৎস', 'পাইকারি', 'হোলসেল', 'লাভ', 'প্রফিট', 'দাম'];
-                    return !forbidden.some(term => k.includes(term));
-                  })
-                  .map(([key, value]) => (
-                  <div key={key} className="flex justify-between p-3 bg-slate-50 rounded-xl text-xs sm:text-sm">
-                    <span className="font-semibold text-slate-500">{key}</span>
-                    <span className="font-bold text-slate-800 text-right">{value}</span>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="p-6 bg-slate-50 rounded-xl text-center text-xs sm:text-sm text-slate-500">
-                {language === 'bn' ? 'পণ্যটির বিস্তারিত তথ্য উপরে দেওয়া হয়েছে।' : 'Product specifications and details are provided above.'}
+            {/* Full Product Description */}
+            {description && (
+              <div className="p-5 bg-slate-50/90 rounded-2xl border border-slate-200 space-y-2">
+                <h4 className="text-xs sm:text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <Info className="w-4 h-4 text-[#003882]" />
+                  <span>{language === 'bn' ? 'পণ্যের পূর্ণাঙ্গ বিবরণ (Product Description)' : 'Product Description'}</span>
+                </h4>
+                <div className="text-xs sm:text-sm text-slate-700 leading-relaxed whitespace-pre-line font-normal">
+                  {description}
+                </div>
               </div>
             )}
+
+            {Object.keys(productSpecifications).length > 0 ? (
+              <div className="space-y-2.5">
+                <h4 className="text-xs sm:text-sm font-bold text-slate-900">
+                  {language === 'bn' ? 'স্পেসিফিকেশন ও তথ্যসমূহ' : 'Specifications'}
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {Object.entries(productSpecifications)
+                    .filter(([key, value]) => {
+                      const k = key.toLowerCase();
+                      const v = String(value || '').toLowerCase();
+                      const forbidden = ['সোর্স', 'উৎস', 'পাইকারি', 'হোলসেল', 'লাভ', 'প্রফিট', 'দাম', 'shopbase', 'রিসেলার', '01929637253'];
+                      return !forbidden.some(term => k.includes(term) || v.includes(term));
+                    })
+                    .map(([key, value]) => (
+                    <div key={key} className="flex justify-between p-3 bg-slate-50 rounded-xl text-xs sm:text-sm border border-slate-100">
+                      <span className="font-semibold text-slate-500">{key}</span>
+                      <span className="font-bold text-slate-800 text-right">{value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
 
             {selectedProduct.warranty && (
               <div className="p-4 bg-amber-50 rounded-xl border border-amber-200 text-xs sm:text-sm text-amber-900 flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-amber-600 shrink-0" />
                 <div>
                   <span className="font-bold">{language === 'bn' ? 'ওয়ারেন্টি পলিসি: ' : 'Warranty Policy: '}</span>
+                  <span>{selectedProduct.warranty}</span>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Tab 2: Return Policy & Rules */}
+        {activeTab === 'returns' && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 bg-emerald-50/70 border border-emerald-200/80 rounded-2xl space-y-2">
+                <div className="flex items-center gap-2 text-emerald-900 font-bold text-sm">
+                  <RotateCcw className="w-4 h-4 text-emerald-700" />
+                  <span>৭ দিনের সহজ ফ্রি রিটার্ন ও রিপ্লেসমেন্ট পলিসি</span>
+                </div>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  পণ্য হাতে পাওয়ার পর সাইজ সমস্যা, কালার অমিল, কোনো ত্রুটি বা ডিফেক্ট থাকলে পণ্য ডেলিভারির ৭ দিনের মধ্যে সম্পূর্ণ ফ্রিতে রিটার্ন বা রিপ্লেসমেন্ট সুবিধা পাবেন।
+                </p>
+              </div>
+
+              <div className="p-4 bg-blue-50/70 border border-blue-200/80 rounded-2xl space-y-2">
+                <div className="flex items-center gap-2 text-blue-900 font-bold text-sm">
+                  <Truck className="w-4 h-4 text-blue-700" />
+                  <span>ডেলিভারি ম্যানের সামনে পণ্য চেক করার সুযোগ</span>
+                </div>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  ক্যাশ অন ডেলিভারিতে পার্সেল রিসিভ করার সময় ডেলিভারি রাইডারের সামনে প্যাকেট খুলে পণ্যটি দেখে নেওয়ার ১০০% সুযোগ রয়েছে।
+                </p>
+              </div>
+
+              <div className="p-4 bg-amber-50/70 border border-amber-200/80 rounded-2xl space-y-2">
+                <div className="flex items-center gap-2 text-amber-900 font-bold text-sm">
+                  <ShieldCheck className="w-4 h-4 text-amber-700" />
+                  <span>১০০% মানিব্যাক ও রিফান্ড গ্যারান্টি</span>
+                </div>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  কোনো কারণে পণ্য পরিবর্তনের সুযোগ না থাকলে বা পণ্য স্টক-আউট থাকলে সম্পূর্ণ মূল্য বিকাশ বা নগদের মাধ্যমে রিফান্ড করা হবে।
+                </p>
+              </div>
+
+              <div className="p-4 bg-purple-50/70 border border-purple-200/80 rounded-2xl space-y-2">
+                <div className="flex items-center gap-2 text-purple-900 font-bold text-sm">
+                  <CheckCircle2 className="w-4 h-4 text-purple-700" />
+                  <span>রিটার্ন ও রিপ্লেসমেন্ট শর্তাবলী</span>
+                </div>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  পণ্যটি অব্যবহৃত অবস্থায় মূল ট্যাগ ও প্যাকেজিং সহ রাখতে হবে। আমাদের হেল্পলাইনে অথবা ওয়েবসাইটে অর্ডার ট্র্যাকিংয়ের মাধ্যমে যোগাযোগ করুন।
+                </p>
+              </div>
+            </div>
+
+            {selectedProduct.warranty && (
+              <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-200 text-xs sm:text-sm text-emerald-950 flex items-center gap-2.5">
+                <ShieldCheck className="w-5 h-5 text-emerald-700 shrink-0" />
+                <div>
+                  <span className="font-bold">অফিসিয়াল পলিসি: </span>
                   <span>{selectedProduct.warranty}</span>
                 </div>
               </div>
@@ -866,6 +997,84 @@ export const ProductDetailPage: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4" onClick={() => setLightboxImage(null)}>
           <button className="absolute top-4 right-4 text-white p-2" onClick={() => setLightboxImage(null)}><X /></button>
           <img src={lightboxImage} alt={title} className="max-w-full max-h-full object-contain" />
+        </div>
+      )}
+
+      {/* Share Product Modal */}
+      {isShareModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-5 animate-in fade-in zoom-in duration-150">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-slate-900 font-black text-base">
+                <Share2 className="w-5 h-5 text-emerald-600" />
+                <span>{language === 'bn' ? 'পণ্যটির লিংক শেয়ার করুন' : 'Share this Product'}</span>
+              </div>
+              <button
+                onClick={() => setIsShareModalOpen(false)}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-200">
+              <img
+                src={sanitizedImages[0]}
+                alt={title}
+                className="w-14 h-14 object-cover rounded-xl border border-slate-200 shrink-0"
+              />
+              <div className="overflow-hidden">
+                <h4 className="text-xs font-bold text-slate-900 truncate">{title}</h4>
+                <p className="text-xs text-emerald-700 font-black mt-0.5">{formatPrice(selectedProduct.price)}</p>
+                <p className="text-[11px] text-slate-400 mt-0.5 font-mono">SKU: {selectedProduct.sku ? selectedProduct.sku.toUpperCase() : `SBP-${selectedProduct.id}`}</p>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-700">
+                {language === 'bn' ? 'সরাসরি প্রডাক্ট লিঙ্ক:' : 'Direct Product Link:'}
+              </label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  readOnly
+                  value={productShareUrl}
+                  className="flex-1 px-3 py-2 text-xs font-mono bg-slate-50 border border-slate-300 rounded-xl text-slate-700 outline-none select-all"
+                />
+                <button
+                  type="button"
+                  onClick={copyProductLink}
+                  className={`px-3.5 py-2 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap shadow-xs ${
+                    copiedLink
+                      ? 'bg-emerald-600 text-white'
+                      : 'bg-slate-900 hover:bg-slate-800 text-white'
+                  }`}
+                >
+                  {copiedLink ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>{copiedLink ? (language === 'bn' ? 'কপি হয়েছে' : 'Copied') : (language === 'bn' ? 'কপি করুন' : 'Copy')}</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="pt-2 border-t border-slate-100 flex gap-2">
+              <a
+                href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`${title}\nদাম: ${formatPrice(selectedProduct.price)}\nসরাসরি অর্ডার করতে ক্লিক করুন: ${productShareUrl}`)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex-1 py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-xs"
+              >
+                <span>WhatsApp</span>
+              </a>
+              <a
+                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productShareUrl)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex-1 py-2.5 px-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-xs"
+              >
+                <span>Facebook</span>
+              </a>
+            </div>
+          </div>
         </div>
       )}
     </div>

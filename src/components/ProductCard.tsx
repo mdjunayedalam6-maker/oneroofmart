@@ -18,6 +18,7 @@ export const ProductCard: React.FC<{ product: Product; layout?: 'grid' | 'list' 
 
   const isSaved = isInWishlist(product.id);
   const title = language === 'bn' ? product.titleBn : product.titleEn;
+  const displayBrand = (!product.brand || product.brand.toLowerCase().includes('shopbase')) ? 'OneRoof Mart' : product.brand;
 
   // Robust image handling: normalize ShopBaseBD image extensions and provide fallback
   const initialImage = React.useMemo(() => {
@@ -87,7 +88,7 @@ export const ProductCard: React.FC<{ product: Product; layout?: 'grid' | 'list' 
           <div>
             <div className="flex items-center justify-between gap-2 mb-1">
               <span className="text-[11px] font-bold tracking-wider text-[#003882] uppercase bg-blue-50 px-2 py-0.5 rounded">
-                {product.brand}
+                {displayBrand}
               </span>
               <div className="flex items-center text-amber-500 text-xs font-bold gap-1">
                 <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
@@ -215,11 +216,16 @@ export const ProductCard: React.FC<{ product: Product; layout?: 'grid' | 'list' 
 
       <div className="flex-1 flex flex-col justify-between">
         <div>
-          <div className="flex items-center justify-between text-[11px] mb-1.5">
-            <span className="font-bold text-[#003882] bg-blue-50 px-2 py-0.5 rounded uppercase tracking-wider text-[10px]">
-              {product.brand}
-            </span>
-            <div className="flex items-center text-amber-500 font-bold gap-1">
+          <div className="flex items-center justify-between text-[11px] mb-1.5 gap-1">
+            <div className="flex items-center gap-1.5 overflow-hidden">
+              <span className="font-bold text-[#003882] bg-blue-50 px-2 py-0.5 rounded uppercase tracking-wider text-[10px] shrink-0">
+                {displayBrand}
+              </span>
+              <span className="text-[10px] text-slate-400 font-mono truncate">
+                {product.sku ? product.sku.toUpperCase() : `SBP-${product.id.replace(/\D/g, '') || product.id.toUpperCase()}`}
+              </span>
+            </div>
+            <div className="flex items-center text-amber-500 font-bold gap-1 shrink-0">
               <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
               <span>{product.rating}</span>
               <span className="text-slate-400 font-normal">({product.reviewCount})</span>

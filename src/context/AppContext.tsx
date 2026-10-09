@@ -41,6 +41,7 @@ import {
   fetchBannerSlidesFromSupabase,
   syncUserToSupabase,
   syncProductsBatchToSupabase,
+  updateAllProductsProfitMarginInSupabase,
   fetchUsersFromSupabase,
   supabase,
   SUPABASE_URL,
@@ -164,6 +165,9 @@ interface AppContextType {
   supabaseSetupSql: string;
   supabaseUrl: string;
   isProductsLoading: boolean;
+  globalProfitMargin: number;
+  updateGlobalProfitMargin: (marginPercent: number) => Promise<boolean>;
+  enforceWhiteLabelPurge: () => Promise<boolean>;
 }
 
 const defaultFilterState: FilterState = {
@@ -581,6 +585,107 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       isMounted = false;
     };
   }, []);
+
+  // Deep-link listener for shared product URLs (e.g. ?product=sbp-17804, /product/17804, or #product=sbp-17804)
+  useEffect(() => {
+    const checkUrlForProduct = () => {
+      if (typeof window === 'undefined') return;
+      try {
+        const params = new URLSearchParams(window.location.search);
+        let targetId = params.get('product') || params.get('p') || params.get('id');
+        
+        // Check pathname (e.g. /product/sbp-1234 or /product/1234)
+        if (!targetId && window.location.pathname) {
+          const pathMatch = window.location.pathname.match(/\/product\/([^/?#]+)/i);
+          if (pathMatch) targetId = decodeURIComponent(pathMatch[1]);
+        }
+
+        if (!targetId && window.location.hash) {
+          const match = window.location.hash.match(/product=([^&]+)/);
+          if (match) targetId = decodeURIComponent(match[1]);
+          else if (window.location.hash.startsWith('#/product/')) {
+            targetId = decodeURIComponent(window.location.hash.replace('#/product/', ''));
+          }
+        }
+
+        if (targetId) {
+          targetId = targetId.trim();
+          const targetLower = targetId.toLowerCase();
+          const cleanNum = targetId.replace(/\D/g, '');
+
+          // Check if already viewing this product
+          if (
+            selectedProduct && 
+            (selectedProduct.id.toLowerCase() === targetLower || 
+             selectedProduct.sku?.toUpperCase() === targetId.toUpperCase() ||
+             (cleanNum && selectedProduct.id.toLowerCase() === `sbp-${cleanNum}`))
+          ) {
+            if (currentPage !== 'product-detail') setCurrentPageState('product-detail');
+            return;
+          }
+
+          // Try finding in current products state
+          const matchInState = products.find((p) => {
+            const pId = p.id.toLowerCase();
+            const pSku = (p.sku || '').toLowerCase();
+            return pId === targetLower || 
+                   pSku === targetLower || 
+                   (cleanNum && (pId === `sbp-${cleanNum}` || pSku === `sbp-${cleanNum}`));
+          });
+
+          if (matchInState) {
+            setSelectedProduct(matchInState);
+            setCurrentPageState('product-detail');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } else {
+            // Fetch directly from Supabase for instant link resolution even before full catalog loads
+            const orConditions = [
+              `id.eq.${targetId}`,
+              `id.eq.sbp-${targetId}`,
+              `data->>sku.eq.${targetId}`,
+              `data->>sku.eq.SBP-${targetId}`
+            ];
+            if (cleanNum) {
+              orConditions.push(`id.eq.sbp-${cleanNum}`);
+              orConditions.push(`data->>sku.eq.SBP-${cleanNum}`);
+            }
+
+            Promise.resolve(
+              supabase
+                .from('products')
+                .select('*')
+                .or(orConditions.join(','))
+                .maybeSingle()
+            )
+              .then(({ data, error }) => {
+                if (!error && data) {
+                  const p: Product = (data.data && typeof data.data === 'object') ? { ...(data.data as Product) } : ({} as Product);
+                  p.id = data.id || p.id;
+                  if (data.title_bn) p.titleBn = data.title_bn;
+                  if (data.title_en) p.titleEn = data.title_en;
+                  if (data.price !== undefined && data.price !== null) p.price = Number(data.price);
+                  if (data.original_price !== undefined && data.original_price !== null) p.originalPrice = Number(data.original_price);
+                  if (!p.brand || p.brand.toLowerCase().includes('shopbase')) p.brand = 'OneRoof Mart';
+                  setSelectedProduct(p);
+                  setCurrentPageState('product-detail');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              })
+              .catch(() => {});
+          }
+        }
+      } catch (_) {}
+    };
+
+    checkUrlForProduct();
+    window.addEventListener('popstate', checkUrlForProduct);
+    window.addEventListener('hashchange', checkUrlForProduct);
+
+    return () => {
+      window.removeEventListener('popstate', checkUrlForProduct);
+      window.removeEventListener('hashchange', checkUrlForProduct);
+    };
+  }, [products]);
 
   // Initial Supabase Sync on mount - unblocked & parallel for lightning load speed
   useEffect(() => {
@@ -1360,6 +1465,133 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     addToast(language === 'bn' ? 'ডিফল্ট সেটিংস ও কালার রিস্টোর করা হয়েছে' : 'Default settings restored', 'info');
   };
 
+  const globalProfitMargin = siteSettings.globalProfitMargin || siteSettings.shopbaseConfig?.profitMargin || 15;
+
+  // Universal Profit Margin & Dynamic Pricing Controller
+  const updateGlobalProfitMargin = async (newMargin: number): Promise<boolean> => {
+    try {
+      const validMargin = Math.max(1, Math.min(100, Math.round(newMargin)));
+      // 1. Update siteSettings
+      const updatedSettings: SiteSettings = {
+        ...siteSettings,
+        globalProfitMargin: validMargin,
+        shopbaseConfig: {
+          ...(siteSettings.shopbaseConfig || {
+            connected: true,
+            accountNumber: '01929637253',
+            autoSync: true,
+            autoForwardOrders: true,
+          }),
+          profitMargin: validMargin,
+        },
+      };
+      setSiteSettings(updatedSettings);
+      syncSiteSettingsToSupabase(updatedSettings).catch(() => {});
+      safeLocalStorage.setItem('oneroof_site_settings', JSON.stringify(updatedSettings));
+
+      // 2. Recalculate prices across all products in state
+      setProducts((prev) => {
+        const updated = prev.map((p) => {
+          const wholesale = Number(p.wholesalePrice || p.price);
+          const newPrice = Math.round(wholesale * (1 + validMargin / 100));
+          return {
+            ...p,
+            price: newPrice,
+            originalPrice: Math.max(p.originalPrice || Math.round(newPrice * 1.3), Math.round(newPrice * 1.25)),
+            profitMarginPercent: validMargin,
+            brand: (!p.brand || p.brand.toLowerCase().includes('shopbase')) ? 'OneRoof Mart' : p.brand,
+          };
+        });
+        idbSet('oneroof_cached_products', updated).catch(() => {});
+        try {
+          safeLocalStorage.setItem('oneroof_products', JSON.stringify(updated.slice(0, 200)));
+        } catch (_) {}
+        return updated;
+      });
+
+      // 3. Batch sync to Supabase in background
+      updateAllProductsProfitMarginInSupabase(validMargin).catch((err) => {
+        console.warn('Background Supabase margin sync notice:', err);
+      });
+
+      addToast(
+        language === 'bn'
+          ? `সকল ১১,৮৯৬+ প্রোডাক্টে ${validMargin}% প্রফিট মার্জিন সফলভাবে কার্যকর হয়েছে!`
+          : `Applied ${validMargin}% profit margin across all products!`,
+        'success'
+      );
+      return true;
+    } catch {
+      addToast(language === 'bn' ? 'মার্জিন আপডেটে সমস্যা হয়েছে' : 'Failed to update margin', 'error');
+      return false;
+    }
+  };
+
+  // Enforce White-Label Store Branding and Purge Supplier references
+  const enforceWhiteLabelPurge = async (): Promise<boolean> => {
+    try {
+      setProducts((prev) => {
+        const cleaned = prev.map((p) => {
+          let desc = p.descriptionBn || '';
+          desc = desc.replace(/ShopBase BD পণ্য/gi, 'OneRoof Mart এক্সক্লুসিভ পণ্য');
+          desc = desc.replace(/ShopBase BD/gi, 'OneRoof Mart');
+          desc = desc.replace(/ShopBaseBD Official/gi, 'OneRoof Official');
+          desc = desc.replace(/ShopBase/gi, 'OneRoof');
+          desc = desc.split('\n').filter(line => {
+            const l = line.toLowerCase();
+            return !l.includes('পাইকারি রেট') && 
+                   !l.includes('পাইকারি মূল্য') && 
+                   !l.includes('হোলসেল') && 
+                   !l.includes('রিসেলার একাউন্ট') && 
+                   !l.includes('01929637253') &&
+                   !l.includes('আপনার নিট প্রফিট') &&
+                   !l.includes('আপনার লাভ');
+          }).join('\n').trim();
+
+          const cleanSpecs: Record<string, string> = {
+            'ব্র্যান্ড': 'OneRoof Mart',
+            'কোয়ালিটি': '১০০% প্রিমিয়াম এক্সপোর্ট স্ট্যান্ডার্ড',
+            'ডেলিভারি': 'সারাদেশে ক্যাশ অন ডেলিভারি (২-৪ দিন)',
+            'ওয়ারেন্টি': '৭ দিনের রিটার্ন ও রিপ্লেসমেন্ট',
+          };
+
+          if (p.specifications && typeof p.specifications === 'object') {
+            const forbiddenKeys = ['সোর্স', 'উৎস', 'পাইকারি', 'হোলসেল', 'লাভ', 'প্রফিট', 'রিসেলার', 'একাউন্ট'];
+            Object.entries(p.specifications).forEach(([k, v]) => {
+              if (!forbiddenKeys.some(f => k.includes(f))) {
+                cleanSpecs[k] = String(v).replace(/ShopBase/gi, 'OneRoof');
+              }
+            });
+          }
+
+          return {
+            ...p,
+            brand: 'OneRoof Mart',
+            descriptionBn: desc,
+            specifications: cleanSpecs,
+            tags: (p.tags || []).filter(t => !['shopbase', 'dropshipping', 'wholesale'].includes(String(t).toLowerCase())),
+          };
+        });
+
+        idbSet('oneroof_cached_products', cleaned).catch(() => {});
+        try {
+          safeLocalStorage.setItem('oneroof_products', JSON.stringify(cleaned.slice(0, 200)));
+        } catch (_) {}
+        return cleaned;
+      });
+
+      addToast(
+        language === 'bn'
+          ? '১০০% নিজস্ব OneRoof Mart ব্র্যান্ডিং সফলভাবে নিশ্চিত করা হয়েছে!'
+          : 'Enforced 100% white-label store brand!',
+        'success'
+      );
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
   // Banner Slides Operations
   const updateBannerSlides = (slides: AdminBannerSlide[]) => {
     setBannerSlides(slides);
@@ -1401,6 +1633,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const setCurrentPage = (page: PageView) => {
     setCurrentPageState(page);
+    try {
+      if (typeof window !== 'undefined' && window.history && page !== 'product-detail') {
+        const url = new URL(window.location.href);
+        if (url.searchParams.has('product') || url.searchParams.has('p') || url.searchParams.has('id')) {
+          url.searchParams.delete('product');
+          url.searchParams.delete('p');
+          url.searchParams.delete('id');
+          const newUrl = url.pathname + (url.search ? url.search : '') + (url.hash && !url.hash.includes('product') ? url.hash : '');
+          window.history.pushState({}, '', newUrl);
+        }
+      }
+    } catch (_) {}
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -1418,7 +1662,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const viewProductDetails = (product: Product) => {
     setSelectedProduct(product);
-    setCurrentPage('product-detail');
+    setCurrentPageState('product-detail');
+    try {
+      if (typeof window !== 'undefined' && window.history) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('product', product.id);
+        window.history.pushState({ productId: product.id }, '', url.toString());
+      }
+    } catch (_) {}
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const openCategory = (catSlug: string) => {
@@ -2008,6 +2260,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         supabaseSetupSql: SUPABASE_SETUP_SQL,
         supabaseUrl: SUPABASE_URL,
         isProductsLoading,
+        globalProfitMargin,
+        updateGlobalProfitMargin,
+        enforceWhiteLabelPurge,
       }}
     >
       {children}
