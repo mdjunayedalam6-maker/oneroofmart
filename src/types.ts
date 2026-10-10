@@ -162,6 +162,7 @@ export interface Coupon {
 
 export interface OrderItem {
   productId: string;
+  sku?: string;
   title: string;
   price: number;
   quantity: number;

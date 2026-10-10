@@ -396,30 +396,32 @@ export async function deleteMultipleProductsFromSupabase(productIds: string[]): 
   }
 }
 
-export async function fetchProductsFromSupabase(): Promise<Product[] | null> {
+export async function fetchProductsFromSupabase(
+  onBatch?: (currentBatch: Product[], totalSoFar: number) => void
+): Promise<Product[] | null> {
   try {
     const allProducts: Product[] = [];
     const step = 1000;
     let from = 0;
-    const maxPages = 20; // Up to 20,000 products support
+    const maxPages = 25; // Supports up to 25,000+ products
 
     for (let page = 0; page < maxPages; page++) {
-      const query = supabase
+      const { data, error } = await supabase
         .from('products')
-        .select('*')
-        .order('updated_at', { ascending: false })
+        .select('id, title_bn, title_en, price, original_price, category, subcategory, stock, data')
+        .order('id', { ascending: true })
         .range(from, from + step - 1);
 
-      // 8-second timeout guarantee
-      const timeoutPromise = new Promise<any>((_, reject) =>
-        setTimeout(() => reject(new Error('Product fetch timeout')), 8000)
-      );
-
-      const { data, error } = await Promise.race([query, timeoutPromise]);
-
-      if (error || !data || data.length === 0) {
+      if (error) {
+        console.warn('Supabase fetchProducts error on page', page, error.message);
         break;
       }
+
+      if (!data || data.length === 0) {
+        break;
+      }
+
+      const batchProducts: Product[] = [];
 
       for (const row of data) {
         if (row) {
@@ -432,10 +434,15 @@ export async function fetchProductsFromSupabase(): Promise<Product[] | null> {
           if (row.category) item.category = row.category;
           if (row.subcategory) item.subcategory = row.subcategory;
           if (row.stock !== undefined && row.stock !== null) item.stock = Number(row.stock);
+          
           if (item.id) {
             // White-label safety: enforce OneRoof Mart brand and supplier price fields
             if (!item.brand || item.brand.toLowerCase().includes('shopbase')) {
               item.brand = 'OneRoof Mart';
+            }
+            if (!item.sku) {
+              const cleanNum = item.id.replace(/\D/g, '');
+              item.sku = `SBP-${cleanNum || item.id.toUpperCase()}`;
             }
             if (!item.wholesalePrice) {
               item.wholesalePrice = item.price;
@@ -444,8 +451,15 @@ export async function fetchProductsFromSupabase(): Promise<Product[] | null> {
               item.profitMarginPercent = 15;
             }
             allProducts.push(item);
+            batchProducts.push(item);
           }
         }
+      }
+
+      if (onBatch && batchProducts.length > 0) {
+        try {
+          onBatch(batchProducts, allProducts.length);
+        } catch (_) {}
       }
 
       if (data.length < step) {

@@ -88,7 +88,7 @@ const ShowcasePanel: React.FC<ShowcasePanelProps> = ({
   useEffect(() => {
     if (isPaused || total <= 1) return;
 
-    const stepMs = 50;
+    const stepMs = 250;
     const stepIncrement = (stepMs / autoRotateInterval) * 100;
 
     const interval = setInterval(() => {
@@ -258,23 +258,27 @@ const ShowcasePanel: React.FC<ShowcasePanelProps> = ({
 export const DualCategoryShowcase: React.FC = () => {
   const { products } = useApp();
 
-  // 1. Fashion / Panjabi & Festive Products
-  const fashionProducts = products.filter((p) => {
-    const isFashionCat = p.category === 'fashion';
-    const hasFestiveTag = p.tags && p.tags.some((t) => 
-      ['panjabi', 'kabli', 'eid', 'festive', 'fashion'].includes(t.toLowerCase())
-    );
-    return isFashionCat || hasFestiveTag;
-  });
+  // 1. Fashion / Panjabi & Festive Products (strictly top 6 handpicked)
+  const fashionProducts = React.useMemo(() => {
+    return products.filter((p) => {
+      const isFashionCat = p.category === 'fashion' || p.category === 'mens-clothing';
+      const hasFestiveTag = p.tags && p.tags.some((t) => 
+        ['panjabi', 'kabli', 'eid', 'festive', 'fashion'].includes(t.toLowerCase())
+      );
+      return isFashionCat || hasFestiveTag;
+    }).slice(0, 6);
+  }, [products]);
 
-  // 2. Grocery / Pure & Natural Products
-  const groceryProducts = products.filter((p) => {
-    const isGroceryCat = p.category === 'grocery';
-    const hasOrganicTag = p.tags && p.tags.some((t) => 
-      ['grocery', 'honey', 'rice', 'oil', 'ghee', 'organic', 'pure'].includes(t.toLowerCase())
-    );
-    return isGroceryCat || hasOrganicTag;
-  });
+  // 2. Grocery / Pure & Natural Products (strictly top 6 handpicked)
+  const groceryProducts = React.useMemo(() => {
+    return products.filter((p) => {
+      const isGroceryCat = p.category === 'grocery';
+      const hasOrganicTag = p.tags && p.tags.some((t) => 
+        ['grocery', 'honey', 'rice', 'oil', 'ghee', 'organic', 'pure'].includes(t.toLowerCase())
+      );
+      return isGroceryCat || hasOrganicTag;
+    }).slice(0, 6);
+  }, [products]);
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 py-2">

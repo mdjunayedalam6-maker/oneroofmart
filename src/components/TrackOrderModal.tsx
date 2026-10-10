@@ -377,9 +377,14 @@ export const TrackOrderModal: React.FC = () => {
                         className="w-12 h-12 object-cover rounded-lg border border-slate-200 shrink-0"
                       />
                       <div className="flex-1 min-w-0">
-                        <h6 className="text-xs font-bold text-slate-800 truncate">
-                          {item.title}
-                        </h6>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h6 className="text-xs font-bold text-slate-800 truncate">
+                            {item.title}
+                          </h6>
+                          <span className="text-[10px] font-mono font-bold bg-slate-100 text-slate-700 px-1.5 py-0.2 rounded border border-slate-300">
+                            SKU: {item.sku || `SBP-${item.productId.replace(/\D/g, '') || item.productId}`}
+                          </span>
+                        </div>
                         <div className="flex flex-wrap items-center gap-1 mt-0.5">
                           {item.selectedSize && (
                             <span className="text-[10px] font-bold bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded border border-indigo-100">

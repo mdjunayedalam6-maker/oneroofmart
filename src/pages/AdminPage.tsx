@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { 
   ShieldCheck, 
   Package, 
@@ -95,6 +95,8 @@ export const AdminPage: React.FC = () => {
   // Product management state
   const [productSearch, setProductSearch] = useState('');
   const [productCatFilter, setProductCatFilter] = useState('all');
+  const [productPage, setProductPage] = useState(1);
+  const productsPerPage = 30;
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [productToEdit, setProductToEdit] = useState<Product | null>(null);
 
@@ -450,14 +452,31 @@ export const AdminPage: React.FC = () => {
   const pendingOrdersCount = orders.filter((o) => o.status === 'placed' || o.status === 'processing').length;
   const deliveredOrdersCount = orders.filter((o) => o.status === 'delivered').length;
 
-  // Filtered Products
-  const filteredProducts = products.filter((p) => {
-    const matchesSearch = (p.titleBn + ' ' + p.titleEn + ' ' + p.brand)
-      .toLowerCase()
-      .includes(productSearch.toLowerCase());
-    const matchesCat = productCatFilter === 'all' || p.category === productCatFilter;
-    return matchesSearch && matchesCat;
-  });
+  // Memoized Filtered Products (Supports searching by title, SKU, brand, ID across all 11,902 products)
+  const filteredProducts = useMemo(() => {
+    const s = productSearch.toLowerCase().trim();
+    if (!s && productCatFilter === 'all') return products;
+
+    return products.filter((p) => {
+      const matchesSearch = !s || (
+        (p.titleBn && p.titleBn.toLowerCase().includes(s)) ||
+        (p.titleEn && p.titleEn.toLowerCase().includes(s)) ||
+        (p.brand && p.brand.toLowerCase().includes(s)) ||
+        (p.sku && p.sku.toLowerCase().includes(s)) ||
+        p.id.toLowerCase().includes(s)
+      );
+      const matchesCat = productCatFilter === 'all' || p.category === productCatFilter;
+      return matchesSearch && matchesCat;
+    });
+  }, [products, productSearch, productCatFilter]);
+
+  const totalProductPages = Math.ceil(filteredProducts.length / productsPerPage) || 1;
+  const currentProductPageSafe = Math.min(productPage, totalProductPages);
+
+  const paginatedProducts = useMemo(() => {
+    const start = (currentProductPageSafe - 1) * productsPerPage;
+    return filteredProducts.slice(start, start + productsPerPage);
+  }, [filteredProducts, currentProductPageSafe, productsPerPage]);
 
   // Filtered Orders
   const filteredOrders = orders.filter((ord) => {
@@ -1091,7 +1110,12 @@ export const AdminPage: React.FC = () => {
                               </span>
                             </div>
                             <div className="flex-1 min-w-0">
-                              <div className="font-bold text-slate-100 truncate">{item.title}</div>
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <div className="font-bold text-slate-100 truncate">{item.title}</div>
+                                <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-md border border-blue-500/30 shrink-0">
+                                  SKU: {item.sku || `SBP-${item.productId.replace(/\D/g, '') || item.productId}`}
+                                </span>
+                              </div>
                               
                               {/* Customer's Selected Size & Color Badges */}
                               <div className="flex flex-wrap items-center gap-1.5 mt-1">
@@ -1213,15 +1237,21 @@ export const AdminPage: React.FC = () => {
                   <input
                     type="text"
                     value={productSearch}
-                    onChange={(e) => setProductSearch(e.target.value)}
-                    placeholder="পণ্য বা ব্র্যান্ড খুঁজুন..."
+                    onChange={(e) => {
+                      setProductSearch(e.target.value);
+                      setProductPage(1);
+                    }}
+                    placeholder="পণ্য, SKU বা ব্র্যান্ড খুঁজুন..."
                     className="w-full pl-9 pr-4 py-2 text-xs bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:border-amber-400 outline-none"
                   />
                 </div>
 
                 <select
                   value={productCatFilter}
-                  onChange={(e) => setProductCatFilter(e.target.value)}
+                  onChange={(e) => {
+                    setProductCatFilter(e.target.value);
+                    setProductPage(1);
+                  }}
                   className="px-3 py-2 text-xs bg-slate-900 border border-slate-700 rounded-xl text-white capitalize focus:border-amber-400 outline-none"
                 >
                   <option value="all">সব ক্যাটাগরি</option>
@@ -1403,9 +1433,51 @@ export const AdminPage: React.FC = () => {
               </button>
             </div>
 
+            {/* Pagination Controls Bar (Top) */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-800/90 p-3.5 rounded-2xl border border-slate-700/80 text-xs">
+              <div className="text-slate-300 font-medium text-center sm:text-left">
+                মোট <strong className="text-amber-400 font-bold">{filteredProducts.length}</strong> টির মধ্যে{' '}
+                <span className="text-white font-bold">
+                  {filteredProducts.length === 0 ? 0 : (currentProductPageSafe - 1) * productsPerPage + 1} -{' '}
+                  {Math.min(currentProductPageSafe * productsPerPage, filteredProducts.length)}
+                </span>{' '}
+                দেখাচ্ছে (পৃষ্ঠা {currentProductPageSafe} / {totalProductPages})
+              </div>
+
+              {totalProductPages > 1 && (
+                <div className="flex items-center gap-1.5 flex-wrap justify-center">
+                  <button
+                    type="button"
+                    disabled={currentProductPageSafe <= 1}
+                    onClick={() => {
+                      setProductPage((prev) => Math.max(1, prev - 1));
+                    }}
+                    className="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl font-bold transition-all text-xs"
+                  >
+                    &larr; আগের পেজ
+                  </button>
+
+                  <span className="px-3 py-1 bg-amber-500/20 text-amber-300 font-bold rounded-xl border border-amber-500/30 text-xs">
+                    {currentProductPageSafe} / {totalProductPages}
+                  </span>
+
+                  <button
+                    type="button"
+                    disabled={currentProductPageSafe >= totalProductPages}
+                    onClick={() => {
+                      setProductPage((prev) => Math.min(totalProductPages, prev + 1));
+                    }}
+                    className="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl font-bold transition-all text-xs"
+                  >
+                    পরবর্তী পেজ &rarr;
+                  </button>
+                </div>
+              )}
+            </div>
+
             {/* Mobile Responsive Cards View (< md) */}
             <div className="block md:hidden space-y-3">
-              {filteredProducts.map((p, idx) => {
+              {paginatedProducts.map((p, idx) => {
                 const isSelected = selectedProductIds.includes(p.id);
                 const isHolding = holdingProductId === p.id;
 
@@ -1599,7 +1671,7 @@ export const AdminPage: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-700/60">
-                    {filteredProducts.map((p, idx) => {
+                    {paginatedProducts.map((p, idx) => {
                       const isSelected = selectedProductIds.includes(p.id);
                       const isHolding = holdingProductId === p.id;
 
@@ -1768,6 +1840,50 @@ export const AdminPage: React.FC = () => {
                 </table>
               </div>
             </div>
+
+            {/* Bottom Pagination Controls */}
+            {totalProductPages > 1 && (
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-800/90 p-3.5 rounded-2xl border border-slate-700/80 text-xs">
+                <div className="text-slate-300 font-medium text-center sm:text-left">
+                  মোট <strong className="text-amber-400 font-bold">{filteredProducts.length}</strong> টির মধ্যে{' '}
+                  <span className="text-white font-bold">
+                    {(currentProductPageSafe - 1) * productsPerPage + 1} -{' '}
+                    {Math.min(currentProductPageSafe * productsPerPage, filteredProducts.length)}
+                  </span>{' '}
+                  দেখাচ্ছে (পৃষ্ঠা {currentProductPageSafe} / {totalProductPages})
+                </div>
+
+                <div className="flex items-center gap-1.5 flex-wrap justify-center">
+                  <button
+                    type="button"
+                    disabled={currentProductPageSafe <= 1}
+                    onClick={() => {
+                      setProductPage((prev) => Math.max(1, prev - 1));
+                      window.scrollTo({ top: 300, behavior: 'smooth' });
+                    }}
+                    className="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl font-bold transition-all text-xs"
+                  >
+                    &larr; আগের পেজ
+                  </button>
+
+                  <span className="px-3 py-1 bg-amber-500/20 text-amber-300 font-bold rounded-xl border border-amber-500/30 text-xs">
+                    {currentProductPageSafe} / {totalProductPages}
+                  </span>
+
+                  <button
+                    type="button"
+                    disabled={currentProductPageSafe >= totalProductPages}
+                    onClick={() => {
+                      setProductPage((prev) => Math.min(totalProductPages, prev + 1));
+                      window.scrollTo({ top: 300, behavior: 'smooth' });
+                    }}
+                    className="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl font-bold transition-all text-xs"
+                  >
+                    পরবর্তী পেজ &rarr;
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* Floating Bulk Action Bar (Always accessible when items selected) */}
             {isSelectionMode && selectedProductIds.length > 0 && (

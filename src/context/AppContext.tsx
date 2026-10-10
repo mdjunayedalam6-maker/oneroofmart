@@ -714,7 +714,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           remoteSlides,
           remoteUsers
         ] = await Promise.all([
-          fetchProductsFromSupabase(),
+          fetchProductsFromSupabase((batchProducts) => {
+            if (isMounted && batchProducts && batchProducts.length > 0) {
+              setProducts((prev) => {
+                const map = new Map(prev.map((p) => [p.id, p]));
+                for (const p of batchProducts) {
+                  map.set(p.id, p);
+                }
+                return Array.from(map.values());
+              });
+            }
+          }),
           fetchOrdersFromSupabase(),
           fetchSiteSettingsFromSupabase(),
           fetchCategoriesFromSupabase(),
@@ -1931,6 +1941,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       status: 'placed',
       items: cart.map((item) => ({
         productId: item.product.id,
+        sku: item.product.sku || (item.product.id ? `SBP-${item.product.id.replace(/\D/g, '') || item.product.id}` : undefined),
         title: language === 'bn' ? item.product.titleBn : item.product.titleEn,
         price: item.product.price,
         quantity: item.quantity,

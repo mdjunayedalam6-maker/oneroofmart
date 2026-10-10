@@ -20,13 +20,24 @@ export const FeaturedSections: React.FC = () => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
 
-  const filteredFeatured = products.filter((p) => {
-    if (activeTab === 'all') return p.isFeatured;
-    return p.isFeatured && p.category === activeTab;
-  });
+  const filteredFeatured = React.useMemo(() => {
+    return products.filter((p) => {
+      if (activeTab === 'all') return p.isFeatured;
+      return p.isFeatured && p.category === activeTab;
+    });
+  }, [products, activeTab]);
 
-  const bestSellers = products.filter((p) => p.isBestSeller).slice(0, 4);
-  const newArrivals = products.filter((p) => p.isNewArrival || p.isFlashSale).slice(0, 4);
+  const displayedFeatured = React.useMemo(() => {
+    return filteredFeatured.slice(0, 16);
+  }, [filteredFeatured]);
+
+  const bestSellers = React.useMemo(() => {
+    return products.filter((p) => p.isBestSeller).slice(0, 4);
+  }, [products]);
+
+  const newArrivals = React.useMemo(() => {
+    return products.filter((p) => p.isNewArrival || p.isFlashSale).slice(0, 4);
+  }, [products]);
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -110,11 +121,36 @@ export const FeaturedSections: React.FC = () => {
               </div>
             ))}
           </div>
-        ) : filteredFeatured.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
-            {filteredFeatured.map((product, idx) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+        ) : displayedFeatured.length > 0 ? (
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+              {displayedFeatured.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+            {filteredFeatured.length > displayedFeatured.length && (
+              <div className="text-center pt-2">
+                <button
+                  onClick={() => {
+                    setFilterState((prev) => ({
+                      ...prev,
+                      category: activeTab === 'all' ? 'all' : activeTab,
+                      subcategory: 'all',
+                      searchQuery: '',
+                    }));
+                    setCurrentPage('shop');
+                  }}
+                  className="px-6 py-3 bg-white hover:bg-slate-50 text-emerald-800 font-bold text-xs sm:text-sm rounded-xl border border-emerald-600/30 hover:border-emerald-600 shadow-xs inline-flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
+                >
+                  <span>
+                    {language === 'bn' 
+                      ? `সকল ফিচারড পণ্য দেখুন (${filteredFeatured.length}টি পণ্য)` 
+                      : `View All Featured Products (${filteredFeatured.length} items)`}
+                  </span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <div className="bg-white rounded-2xl p-8 text-center border border-slate-200/80 text-slate-500 text-sm">

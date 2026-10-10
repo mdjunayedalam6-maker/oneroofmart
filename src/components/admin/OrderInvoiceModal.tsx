@@ -130,7 +130,12 @@ export const OrderInvoiceModal: React.FC<OrderInvoiceModalProps> = ({ order, onC
                         className="w-10 h-10 object-cover rounded-lg border border-slate-200 shrink-0"
                       />
                       <div>
-                        <div className="font-bold text-slate-800">{item.title}</div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-bold text-slate-800">{item.title}</span>
+                          <span className="text-[10px] font-mono font-bold bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded border border-slate-300">
+                            SKU: {item.sku || `SBP-${item.productId.replace(/\D/g, '') || item.productId}`}
+                          </span>
+                        </div>
                         <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
                           {item.selectedSize && (
                             <span className="text-[10px] font-bold bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded border border-indigo-100">
