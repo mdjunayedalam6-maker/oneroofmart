@@ -17,6 +17,6 @@ if (rootElement) {
       </StrictMode>,
     );
   } catch (err) {
-    console.error('OneRoof Mart initialization error:', err);
+    console.error('Bangla Bazar initialization error:', err);
   }
 }

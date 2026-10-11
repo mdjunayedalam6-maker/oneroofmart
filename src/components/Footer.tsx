@@ -49,8 +49,8 @@ export const Footer: React.FC = () => {
 
             <p className="text-xs text-slate-300/90 leading-relaxed max-w-md">
               {language === 'bn'
-                ? 'OneRoof Mart — সারা বাংলাদেশ অনলাইন মার্কেট। 100% আসল পণ্যের নিশ্চয়তা ও দ্রুততম ক্যাশ অন ডেলিভারিতে আপনার প্রয়োজনীয় সবকিছু এক ছাদেই।'
-                : 'OneRoof Mart — Nationwide online marketplace across Bangladesh, delivering 100% authentic products with fast cash on delivery under one roof.'}
+                ? 'বাংলা বাজার — সারা বাংলাদেশ অনলাইন মার্কেট। ১০০% আসল পণ্যের নিশ্চয়তা ও দ্রুততম ক্যাশ অন ডেলিভারিতে আপনার প্রয়োজনীয় সবকিছু এক ঠিকানায়।'
+                : 'Bangla Bazar — Nationwide online marketplace across Bangladesh, delivering 100% authentic products with fast cash on delivery.'}
             </p>
 
             <div className="space-y-2.5 text-xs text-slate-300">
@@ -158,7 +158,7 @@ export const Footer: React.FC = () => {
                     </div>
                     <div>
                       <div className="text-xs font-black text-white flex items-center justify-center sm:justify-start gap-2">
-                        <span>{siteSettings.appNameBn || (language === 'bn' ? 'OneRoof Mart মোবাইল অ্যাপ' : 'OneRoof Mart Mobile App')}</span>
+                        <span>{siteSettings.appNameBn || (language === 'bn' ? 'বাংলা বাজার মোবাইল অ্যাপ' : 'Bangla Bazar Mobile App')}</span>
                         <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
                           APK / App
                         </span>
@@ -185,11 +185,11 @@ export const Footer: React.FC = () => {
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-3.5 p-3.5 px-4 sm:px-5 bg-gradient-to-r from-slate-900/90 via-blue-950/60 to-slate-900/90 border border-blue-500/40 rounded-2xl shadow-xl shadow-blue-950/30">
                   <div className="flex items-center gap-3 text-center sm:text-left">
                     <div className="w-10 h-10 rounded-xl overflow-hidden shadow-md flex items-center justify-center shrink-0">
-                      <img src="/pwa-192x192.png" alt="OneRoof Mart" className="w-full h-full object-cover rounded-xl" />
+                      <img src="/pwa-192x192.png" alt="বাংলা বাজার (Bangla Bazar)" className="w-full h-full object-cover rounded-xl" />
                     </div>
                     <div>
                       <div className="text-xs font-black text-white flex items-center justify-center sm:justify-start gap-2">
-                        <span>{language === 'bn' ? 'OneRoof Mart অফিসিয়াল অ্যাপ' : 'OneRoof Mart Official App'}</span>
+                        <span>{language === 'bn' ? 'বাংলা বাজার অফিসিয়াল অ্যাপ' : 'Bangla Bazar Official App'}</span>
                         <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-400/30">
                           PWA App
                         </span>
@@ -217,7 +217,7 @@ export const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
         <div className="flex flex-wrap items-center gap-3">
           <p>
-            © {new Date().getFullYear()} OneRoof Mart Marketplace Ltd. {language === 'bn' ? 'সর্বস্বত্ব সংরক্ষিত।' : 'All rights reserved.'}
+            © {new Date().getFullYear()} বাংলা বাজার (Bangla Bazar) Marketplace Ltd. {language === 'bn' ? 'সর্বস্বত্ব সংরক্ষিত।' : 'All rights reserved.'}
           </p>
           <button
             onClick={() => {

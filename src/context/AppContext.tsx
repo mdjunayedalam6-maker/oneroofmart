@@ -665,7 +665,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
                   if (data.title_en) p.titleEn = data.title_en;
                   if (data.price !== undefined && data.price !== null) p.price = Number(data.price);
                   if (data.original_price !== undefined && data.original_price !== null) p.originalPrice = Number(data.original_price);
-                  if (!p.brand || p.brand.toLowerCase().includes('shopbase')) p.brand = 'OneRoof Mart';
+                  if (!p.brand || p.brand.toLowerCase().includes('shopbase') || p.brand.toLowerCase().includes('oneroof')) p.brand = 'বাংলা বাজার';
                   setSelectedProduct(p);
                   setCurrentPageState('product-detail');
                   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1509,7 +1509,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             price: newPrice,
             originalPrice: Math.max(p.originalPrice || Math.round(newPrice * 1.3), Math.round(newPrice * 1.25)),
             profitMarginPercent: validMargin,
-            brand: (!p.brand || p.brand.toLowerCase().includes('shopbase')) ? 'OneRoof Mart' : p.brand,
+            brand: (!p.brand || p.brand.toLowerCase().includes('shopbase') || p.brand.toLowerCase().includes('oneroof')) ? 'বাংলা বাজার' : p.brand,
           };
         });
         idbSet('oneroof_cached_products', updated).catch(() => {});
@@ -1543,10 +1543,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setProducts((prev) => {
         const cleaned = prev.map((p) => {
           let desc = p.descriptionBn || '';
-          desc = desc.replace(/ShopBase BD পণ্য/gi, 'OneRoof Mart এক্সক্লুসিভ পণ্য');
-          desc = desc.replace(/ShopBase BD/gi, 'OneRoof Mart');
-          desc = desc.replace(/ShopBaseBD Official/gi, 'OneRoof Official');
-          desc = desc.replace(/ShopBase/gi, 'OneRoof');
+          desc = desc.replace(/ShopBase BD পণ্য/gi, 'বাংলা বাজার এক্সক্লুসিভ পণ্য');
+          desc = desc.replace(/OneRoof Mart এক্সক্লুসিভ পণ্য/gi, 'বাংলা বাজার এক্সক্লুসিভ পণ্য');
+          desc = desc.replace(/ShopBase BD/gi, 'বাংলা বাজার');
+          desc = desc.replace(/OneRoof Mart/gi, 'বাংলা বাজার');
+          desc = desc.replace(/ShopBaseBD Official/gi, 'Bangla Bazar Official');
+          desc = desc.replace(/OneRoof Official/gi, 'Bangla Bazar Official');
+          desc = desc.replace(/ShopBase/gi, 'বাংলা বাজার');
+          desc = desc.replace(/OneRoof/gi, 'বাংলা বাজার');
           desc = desc.split('\n').filter(line => {
             const l = line.toLowerCase();
             return !l.includes('পাইকারি রেট') && 
@@ -1559,7 +1563,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           }).join('\n').trim();
 
           const cleanSpecs: Record<string, string> = {
-            'ব্র্যান্ড': 'OneRoof Mart',
+            'ব্র্যান্ড': 'বাংলা বাজার',
             'কোয়ালিটি': '১০০% প্রিমিয়াম এক্সপোর্ট স্ট্যান্ডার্ড',
             'ডেলিভারি': 'সারাদেশে ক্যাশ অন ডেলিভারি (২-৪ দিন)',
             'ওয়ারেন্টি': '৭ দিনের রিটার্ন ও রিপ্লেসমেন্ট',
@@ -1569,14 +1573,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             const forbiddenKeys = ['সোর্স', 'উৎস', 'পাইকারি', 'হোলসেল', 'লাভ', 'প্রফিট', 'রিসেলার', 'একাউন্ট'];
             Object.entries(p.specifications).forEach(([k, v]) => {
               if (!forbiddenKeys.some(f => k.includes(f))) {
-                cleanSpecs[k] = String(v).replace(/ShopBase/gi, 'OneRoof');
+                cleanSpecs[k] = String(v).replace(/ShopBase/gi, 'বাংলা বাজার').replace(/OneRoof/gi, 'বাংলা বাজার');
               }
             });
           }
 
           return {
             ...p,
-            brand: 'OneRoof Mart',
+            brand: 'বাংলা বাজার',
             descriptionBn: desc,
             specifications: cleanSpecs,
             tags: (p.tags || []).filter(t => !['shopbase', 'dropshipping', 'wholesale'].includes(String(t).toLowerCase())),
@@ -1592,7 +1596,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
       addToast(
         language === 'bn'
-          ? '১০০% নিজস্ব OneRoof Mart ব্র্যান্ডিং সফলভাবে নিশ্চিত করা হয়েছে!'
+          ? '১০০% নিজস্ব বাংলা বাজার (Bangla Bazar) ব্র্যান্ডিং সফলভাবে নিশ্চিত করা হয়েছে!'
           : 'Enforced 100% white-label store brand!',
         'success'
       );
@@ -1778,7 +1782,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const applyCoupon = (code: string): { success: boolean; message: string } => {
     const trimmed = code.trim().toUpperCase();
-    if (trimmed === 'ONEROOF10' || trimmed === 'ONEROOFMART10') {
+    if (trimmed === 'BANGLABAZAR10' || trimmed === 'BANGLA10' || trimmed === 'ONEROOF10' || trimmed === 'ONEROOFMART10') {
       const coupon: Coupon = {
         code: trimmed,
         discountPercent: 10,
@@ -1805,7 +1809,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     } else {
       return { 
         success: false, 
-        message: language === 'bn' ? 'ভুল কুপন কোড! "ONEROOFMART10" বা "EID500" ট্রাই করুন' : 'Invalid promo code! Try "ONEROOFMART10" or "EID500"' 
+        message: language === 'bn' ? 'ভুল কুপন কোড! "BANGLABAZAR10" বা "EID500" ট্রাই করুন' : 'Invalid promo code! Try "BANGLABAZAR10" or "EID500"' 
       };
     }
   };

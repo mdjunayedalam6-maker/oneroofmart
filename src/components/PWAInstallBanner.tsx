@@ -51,14 +51,14 @@ export const PWAInstallBanner: React.FC = () => {
             <div className="w-12 h-12 shrink-0 rounded-2xl overflow-hidden shadow-sm">
               <img
                 src="/pwa-192x192.png"
-                alt="OneRoof Mart App Logo"
+                alt="বাংলা বাজার (Bangla Bazar) App Logo"
                 className="w-full h-full object-cover rounded-2xl"
               />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">
                 <h4 className="text-xs sm:text-sm font-bold text-slate-900 truncate">
-                  {language === 'bn' ? 'OneRoof Mart অ্যাপ' : 'OneRoof Mart Mobile App'}
+                  {language === 'bn' ? 'বাংলা বাজার অ্যাপ' : 'Bangla Bazar Mobile App'}
                 </h4>
                 <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full">
                   Fast & Free
@@ -98,7 +98,7 @@ export const PWAInstallBanner: React.FC = () => {
           <div className="w-full max-w-sm rounded-3xl bg-white p-6 shadow-2xl border border-slate-200">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2.5">
-                <img src="/pwa-192x192.png" alt="OneRoof Mart" className="w-10 h-10 rounded-xl object-cover shadow-xs" />
+                <img src="/pwa-192x192.png" alt="বাংলা বাজার (Bangla Bazar)" className="w-10 h-10 rounded-xl object-cover shadow-xs" />
                 <h3 className="text-base font-bold text-slate-900">
                   {language === 'bn' ? 'iPhone / iPad-এ অ্যাপ ইনস্টল' : 'Install on iPhone / iPad'}
                 </h3>

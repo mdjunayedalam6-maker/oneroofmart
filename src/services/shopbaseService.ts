@@ -711,7 +711,7 @@ export function calculateSellingPrice(wholesalePrice: number, marginPercent: num
 }
 
 /**
- * Converts a raw ShopBase item into a full OneRoof Product model
+ * Converts a raw ShopBase item into a full Bangla Bazar Product model
  */
 export function convertShopBaseToProduct(
   item: ShopBaseRawProduct,
@@ -750,11 +750,11 @@ export function convertShopBaseToProduct(
     sku: `SBP-${item.pid}`,
     titleBn: `${item.name}`,
     titleEn: item.name,
-    descriptionBn: descriptionText || `১০০% প্রিমিয়াম কোয়ালিটি OneRoof Mart এক্সক্লুসিভ পণ্য। আধুনিক ডিজাইন ও আরামদায়ক এক্সপোর্ট ফ্যাব্রিক। সারাদেশে দ্রুত ক্যাশ অন ডেলিভারি এবং ৭ দিনের সহজ রিটার্ন ও এক্সচেঞ্জ গ্যারান্টি সহ। সাইজ: M, L, XL, XXL।`,
-    descriptionEn: descriptionText || `100% premium export quality apparel by OneRoof Mart. Authentic comfortable fabrics with stylish fitting and fast nationwide cash on delivery.`,
+    descriptionBn: descriptionText || `১০০% প্রিমিয়াম কোয়ালিটি বাংলা বাজার (Bangla Bazar) এক্সক্লুসিভ পণ্য। আধুনিক ডিজাইন ও আরামদায়ক এক্সপোর্ট ফ্যাব্রিক। সারাদেশে দ্রুত ক্যাশ অন ডেলিভারি এবং ৭ দিনের সহজ রিটার্ন ও এক্সচেঞ্জ গ্যারান্টি সহ। সাইজ: M, L, XL, XXL।`,
+    descriptionEn: descriptionText || `100% premium export quality apparel by Bangla Bazar. Authentic comfortable fabrics with stylish fitting and fast nationwide cash on delivery.`,
     category: categorySlug,
     subcategory: categoryNameBn,
-    brand: 'OneRoof Mart',
+    brand: 'বাংলা বাজার',
     price: sellingPrice,
     originalPrice: originalPrice,
     discountPercentage: discountPercentage > 0 ? discountPercentage : 15,
@@ -764,7 +764,7 @@ export function convertShopBaseToProduct(
     stock: 50,
     isFeatured: true,
     isNewArrival: true,
-    tags: ['oneroof', categorySlug, 'premium', 'trending'],
+    tags: ['banglabazar', categorySlug, 'premium', 'trending'],
     sizes: sizes,
     variants: [
       {
@@ -773,7 +773,7 @@ export function convertShopBaseToProduct(
       },
     ],
     specifications: {
-      'ব্র্যান্ড': 'OneRoof Mart',
+      'ব্র্যান্ড': 'বাংলা বাজার',
       'কোয়ালিটি': '১০০% প্রিমিয়াম এক্সপোর্ট স্ট্যান্ডার্ড',
       'ডেলিভারি': 'সারাদেশে ক্যাশ অন ডেলিভারি (২-৪ দিন)',
       'ওয়ারেন্টি': '৭ দিনের রিটার্ন ও রিপ্লেসমেন্ট গ্যারান্টি',
@@ -784,7 +784,7 @@ export function convertShopBaseToProduct(
         userName: 'রফিকুল ইসলাম',
         rating: 5,
         date: '১ দিন আগে',
-        comment: 'কাপড়ের কোয়ালিটি সত্যিই চমৎকার। ফিটিংস ও ফিনিশিং দারুণ। ধন্যবাদ OneRoof!',
+        comment: 'কাপড়ের কোয়ালিটি সত্যিই চমৎকার। ফিটিংস ও ফিনিশিং দারুণ। ধন্যবাদ বাংলা বাজার!',
         verifiedPurchase: true,
       },
       {
@@ -1303,7 +1303,7 @@ export function generateShopBaseDropshipOrderSlip(
 📦 SHOPBASE BD - অটো ড্রপশিপিং পার্সেল বুকিং
 =========================================
 রিসেলার আইডি / মোবাইল: ${resellerAccount}
-অর্ডার আইডি (OneRoof): #${order.id}
+অর্ডার আইডি (Bangla Bazar): #${order.id}
 অর্ডারের তারিখ: ${order.date || new Date().toLocaleDateString('bn-BD')}
 
 👤 গ্রাহকের তথ্য (ডেলিভারি ঠিকানা):

@@ -147,7 +147,9 @@ export const ProductDetailPage: React.FC = () => {
 
   const isSaved = isInWishlist(selectedProduct.id);
   const title = language === 'bn' ? selectedProduct.titleBn : selectedProduct.titleEn;
-  const displayBrand = (!selectedProduct.brand || selectedProduct.brand.toLowerCase().includes('shopbase')) ? 'OneRoof Mart' : selectedProduct.brand;
+  const displayBrand = (!selectedProduct.brand || selectedProduct.brand.toLowerCase().includes('shopbase') || selectedProduct.brand.toLowerCase().includes('oneroof')) 
+    ? (language === 'bn' ? 'বাংলা বাজার' : 'Bangla Bazar') 
+    : selectedProduct.brand;
 
   // Safe reviews and specifications fallback
   const productReviews = React.useMemo(() => {
@@ -181,10 +183,14 @@ export const ProductDetailPage: React.FC = () => {
       'Wholesale Price', 'Profit', 'রিসেলার একাউন্ট', '01929637253'
     ];
     let cleaned = rawDescription;
-    cleaned = cleaned.replace(/ShopBase BD পণ্য/gi, 'OneRoof Mart এক্সক্লুসিভ পণ্য');
-    cleaned = cleaned.replace(/ShopBase BD/gi, 'OneRoof Mart');
-    cleaned = cleaned.replace(/ShopBaseBD Official/gi, 'OneRoof Official');
-    cleaned = cleaned.replace(/ShopBase/gi, 'OneRoof');
+    cleaned = cleaned.replace(/ShopBase BD পণ্য/gi, 'বাংলা বাজার এক্সক্লুসিভ পণ্য');
+    cleaned = cleaned.replace(/OneRoof Mart এক্সক্লুসিভ পণ্য/gi, 'বাংলা বাজার এক্সক্লুসিভ পণ্য');
+    cleaned = cleaned.replace(/ShopBase BD/gi, 'বাংলা বাজার');
+    cleaned = cleaned.replace(/OneRoof Mart/gi, 'বাংলা বাজার');
+    cleaned = cleaned.replace(/ShopBaseBD Official/gi, 'Bangla Bazar Official');
+    cleaned = cleaned.replace(/OneRoof Official/gi, 'Bangla Bazar Official');
+    cleaned = cleaned.replace(/ShopBase/gi, 'বাংলা বাজার');
+    cleaned = cleaned.replace(/OneRoof/gi, 'বাংলা বাজার');
     sensitiveTerms.forEach(term => {
       const regex = new RegExp(`${term}.*?(\\n|$)`, 'gi');
       cleaned = cleaned.replace(regex, '');
@@ -226,7 +232,7 @@ export const ProductDetailPage: React.FC = () => {
       try {
         await navigator.share({
           title,
-          text: `${title} - OneRoof Mart থেকে সহজে অর্ডার করুন`,
+          text: `${title} - বাংলা বাজার (Bangla Bazar) থেকে সহজে অর্ডার করুন`,
           url: productShareUrl,
         });
         return;

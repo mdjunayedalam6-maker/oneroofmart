@@ -188,7 +188,7 @@ export const Navbar: React.FC = () => {
           <Sparkles className="w-3.5 h-3.5 text-amber-400" />
           <span>{language === 'bn' ? '১০% ডিসকাউন্ট কুপন: ' : '10% Off Code: '}</span>
           <span className="bg-amber-400 text-slate-950 px-2 py-0.5 rounded font-black tracking-wider text-[11px]">
-            ONEROOFMART10
+            BANGLABAZAR10
           </span>
         </div>
       </div>

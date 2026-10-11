@@ -201,7 +201,7 @@ export const MobileDrawer: React.FC<{ isOpen: boolean; onClose: () => void }> = 
               </div>
               <div className="min-w-0">
                 <div className="text-xs font-bold truncate">
-                  {siteSettings.appNameBn || (language === 'bn' ? 'OneRoof Mart মোবাইল অ্যাপ' : 'OneRoof Mart Mobile App')}
+                  {siteSettings.appNameBn || (language === 'bn' ? 'বাংলা বাজার মোবাইল অ্যাপ' : 'Bangla Bazar Mobile App')}
                 </div>
                 <div className="text-[10px] text-emerald-100 truncate">
                   {siteSettings.appSubtitleBn || (language === 'bn' ? 'ডাউনলোড ও ইনস্টল করুন' : 'Download & Install App')}
@@ -222,10 +222,10 @@ export const MobileDrawer: React.FC<{ isOpen: boolean; onClose: () => void }> = 
         ) : (!isInstalled && (isInstallable || isIOS)) && (
           <div className="p-3 bg-gradient-to-r from-[#003580] to-[#002860] text-white flex items-center justify-between gap-2 shadow-inner">
             <div className="flex items-center gap-2.5 min-w-0">
-              <img src="/pwa-192x192.png" alt="OneRoof Mart" className="w-8 h-8 rounded-lg object-cover shrink-0 shadow-xs" />
+              <img src="/pwa-192x192.png" alt="বাংলা বাজার (Bangla Bazar)" className="w-8 h-8 rounded-lg object-cover shrink-0 shadow-xs" />
               <div className="min-w-0">
                 <div className="text-xs font-bold truncate">
-                  {language === 'bn' ? 'OneRoof Mart মোবাইল অ্যাপ' : 'OneRoof Mart Mobile App'}
+                  {language === 'bn' ? 'বাংলা বাজার মোবাইল অ্যাপ' : 'Bangla Bazar Mobile App'}
                 </div>
                 <div className="text-[10px] text-blue-100 truncate">
                   {language === 'bn' ? 'দ্রুত কেনাকাটায় ইনস্টল করুন' : 'Install for faster shopping'}

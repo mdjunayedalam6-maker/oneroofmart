@@ -598,7 +598,7 @@ export const ShopBaseImporter: React.FC<ShopBaseImporterProps> = ({
           <div className="space-y-1">
             <div className="flex items-center gap-2 font-bold text-white text-sm">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>১০০% হোয়াইট-লেবেল ওয়ানরুফ মার্ট (OneRoof Mart) ব্র্যান্ডিং সক্রিয়</span>
+              <span>১০০% হোয়াইট-লেবেল বাংলা বাজার (Bangla Bazar) ব্র্যান্ডিং সক্রিয়</span>
             </div>
             <p className="text-slate-300 text-[11px] leading-relaxed">
               গ্রাহকদের কোনো অবস্থাতেই ShopBase BD-এর নাম, সোর্স লিংক, পাইকারি মূল্য বা রিসেলার ফোন নম্বর দেখানো হয় না। সকল পণ্য আপনার নিজস্ব স্টোর ব্র্যান্ডের নামে বিক্রি হচ্ছে।
@@ -1142,7 +1142,7 @@ export const ShopBaseImporter: React.FC<ShopBaseImporterProps> = ({
                   </h4>
 
                   <p className="text-xs text-neutral-600 dark:text-neutral-400">
-                    এই ক্যাটাগরির অধীনে মোট <strong className="text-orange-600 font-bold">{detectedCategoryResult.products.length}টি পণ্য</strong> পাওয়া গেছে। নিচের বাটনে ক্লিক করলেই এই ক্যাটাগরি তৈরি/আপডেট হয়ে যাবে এবং ক্যাটাগরির ভেতরের সমস্ত প্রোডাক্ট লাভসহ OneRoof Mart সাইটে একসাথে বাল্ক আপলোড হয়ে যাবে।
+                    এই ক্যাটাগরির অধীনে মোট <strong className="text-orange-600 font-bold">{detectedCategoryResult.products.length}টি পণ্য</strong> পাওয়া গেছে। নিচের বাটনে ক্লিক করলেই এই ক্যাটাগরি তৈরি/আপডেট হয়ে যাবে এবং ক্যাটাগরির ভেতরের সমস্ত প্রোডাক্ট লাভসহ বাংলা বাজার (Bangla Bazar) সাইটে একসাথে বাল্ক আপলোড হয়ে যাবে।
                   </p>
 
                   <div className="bg-orange-50 dark:bg-orange-950/20 p-3 rounded-xl border border-orange-200 dark:border-orange-800/40 text-xs space-y-1">
@@ -1244,7 +1244,7 @@ export const ShopBaseImporter: React.FC<ShopBaseImporterProps> = ({
                     className="w-full py-3 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white rounded-xl font-bold text-sm shadow-md shadow-orange-600/20 flex items-center justify-center gap-2"
                   >
                     <Download className="w-4 h-4" />
-                    <span>এই প্রডাক্ট OneRoof Mart সাইটে আপলোড করুন (১৫% লাভসহ)</span>
+                    <span>এই প্রডাক্ট বাংলা বাজার সাইটে আপলোড করুন (১৫% লাভসহ)</span>
                   </button>
                 </div>
               </div>
@@ -1275,7 +1275,7 @@ export const ShopBaseImporter: React.FC<ShopBaseImporterProps> = ({
                 প্রোডাক্ট আপলোড
               </h4>
               <p className="text-xs text-neutral-600 dark:text-neutral-400">
-                এই পেজ থেকে ১৫% লাভে আপনার পছন্দের প্রোডাক্টগুলো ১-ক্লিকে OneRoof Mart সাইটে আপলোড করুন।
+                এই পেজ থেকে ১৫% লাভে আপনার পছন্দের প্রোডাক্টগুলো ১-ক্লিকে বাংলা বাজার সাইটে আপলোড করুন।
               </p>
             </div>
 

@@ -23,7 +23,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.warn('OneRoof Mart caught error:', error, errorInfo);
+    console.warn('Bangla Bazar caught error:', error, errorInfo);
   }
 
   public render() {

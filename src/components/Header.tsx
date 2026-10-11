@@ -149,7 +149,7 @@ export const Header: React.FC = () => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="text-xs font-black leading-tight flex items-center gap-1.5">
-                          <span className="truncate">{siteSettings.appNameBn || (language === 'bn' ? 'OneRoof Mart মোবাইল অ্যাপ' : 'OneRoof Mart Mobile App')}</span>
+                          <span className="truncate">{siteSettings.appNameBn || (language === 'bn' ? 'বাংলা বাজার মোবাইল অ্যাপ' : 'Bangla Bazar Mobile App')}</span>
                           <span className="text-[9px] font-bold px-1.5 py-0.2 bg-white text-emerald-800 rounded">
                             APK
                           </span>
@@ -381,7 +381,7 @@ export const Header: React.FC = () => {
             <button
               onClick={() => install()}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold transition-all border border-emerald-200 cursor-pointer shadow-2xs"
-              title={language === 'bn' ? 'OneRoof Mart অ্যাপ ইনস্টল করুন' : 'Install OneRoof Mart App'}
+              title={language === 'bn' ? 'বাংলা বাজার অ্যাপ ইনস্টল করুন' : 'Install Bangla Bazar App'}
             >
               <Download className="w-3.5 h-3.5 text-emerald-600 animate-bounce" />
               <span>{language === 'bn' ? 'অ্যাপ ইনস্টল' : 'Install App'}</span>

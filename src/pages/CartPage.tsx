@@ -253,7 +253,7 @@ export const CartPage: React.FC = () => {
                     type="text"
                     value={couponCode}
                     onChange={(e) => setCouponCode(e.target.value)}
-                    placeholder="ONEROOFMART10 / EID500"
+                    placeholder="BANGLABAZAR10 / EID500"
                     className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs uppercase font-semibold text-slate-800 outline-none focus:border-emerald-600"
                   />
                   <button

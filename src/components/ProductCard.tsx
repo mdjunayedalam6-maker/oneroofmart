@@ -18,7 +18,9 @@ export const ProductCard: React.FC<{ product: Product; layout?: 'grid' | 'list' 
 
   const isSaved = isInWishlist(product.id);
   const title = language === 'bn' ? product.titleBn : product.titleEn;
-  const displayBrand = (!product.brand || product.brand.toLowerCase().includes('shopbase')) ? 'OneRoof Mart' : product.brand;
+  const displayBrand = (!product.brand || product.brand.toLowerCase().includes('shopbase') || product.brand.toLowerCase().includes('oneroof')) 
+    ? (language === 'bn' ? 'বাংলা বাজার' : 'Bangla Bazar') 
+    : product.brand;
 
   // Robust image handling: normalize ShopBaseBD image extensions and provide fallback
   const initialImage = React.useMemo(() => {

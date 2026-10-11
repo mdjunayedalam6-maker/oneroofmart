@@ -55,11 +55,11 @@ export const OrderInvoiceModal: React.FC<OrderInvoiceModalProps> = ({ order, onC
           <div className="flex flex-col sm:flex-row justify-between items-start gap-4 pb-4 border-b border-slate-200">
             <div>
               <div className="text-xl font-black text-[#003882]">
-                One<span className="text-[#FF6B00]">Roof</span> Mart
+                বাংলা<span className="text-[#FF6B00]"> বাজার</span> (Bangla Bazar)
               </div>
-              <div className="text-[11px] text-slate-500 mt-0.5">সবকিছু এক ছাদের নিচে</div>
+              <div className="text-[11px] text-slate-500 mt-0.5">সেরা অনলাইন মার্কেটপ্লেস</div>
               <div className="text-[11px] text-slate-400 mt-1">
-                হটলাইন: 16443 | support@oneroofmart.com.bd
+                হটলাইন: 01929637253 | support@banglabazar.com.bd
               </div>
             </div>
 
@@ -188,7 +188,7 @@ export const OrderInvoiceModal: React.FC<OrderInvoiceModalProps> = ({ order, onC
 
           {/* Footer note */}
           <div className="text-center pt-4 border-t border-slate-100 text-[11px] text-slate-400">
-            OneRoof Mart মার্কেটপ্লেস বেছে নেওয়ার জন্য ধন্যবাদ! যেকোনো অনুসন্ধানে 16443 কল করুন।
+            বাংলা বাজার (Bangla Bazar) মার্কেটপ্লেস বেছে নেওয়ার জন্য ধন্যবাদ! যেকোনো অনুসন্ধানে 01929637253 কল করুন।
           </div>
         </div>
       </div>

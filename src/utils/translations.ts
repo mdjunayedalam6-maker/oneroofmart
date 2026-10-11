@@ -16,8 +16,8 @@ export const formatPrice = (amount: number, _lang?: Language): string => {
 
 export const TRANSLATIONS = {
   bn: {
-    siteName: 'OneRoof',
-    tagline: 'এক ছাদের নিচে সবকিছু',
+    siteName: 'বাংলা বাজার',
+    tagline: 'সেরা অনলাইন মার্কেটপ্লেস',
     topBarNotice: 'সমগ্র বাংলাদেশে ফ্রি ডেলিভারি (৳2000+ অর্ডারে) | হটলাইন: 16443',
     searchPlaceholder: 'পণ্য, ব্র্যান্ড বা ক্যাটাগরি অনুসন্ধান করুন...',
     allCategories: 'সকল ক্যাটাগরি',
@@ -113,11 +113,11 @@ export const TRANSLATIONS = {
     trustDesc3: 'কোনো সমস্যা থাকলে বিনামূল্যে বদল সুবিধা',
     trustTitle4: '24/7 সার্বক্ষণিক কাস্টমার সাপোর্ট',
     trustDesc4: 'কল সেন্টার: 16443 অথবা লাইভ চ্যাট',
-    footerAbout: 'OneRoof — সারা বাংলাদেশ অনলাইন মার্কেট। 100% আসল পণ্যের নিশ্চয়তা ও দ্রুততম ক্যাশ অন ডেলিভারিতে আপনার প্রয়োজনীয় সবকিছু এক ছাদেই।',
+    footerAbout: 'বাংলা বাজার — সারা বাংলাদেশ অনলাইন মার্কেট। ১০০% আসল পণ্যের নিশ্চয়তা ও দ্রুততম ক্যাশ অন ডেলিভারিতে আপনার প্রয়োজনীয় সবকিছু এক ঠিকানায়।',
   },
   en: {
-    siteName: 'OneRoof',
-    tagline: 'Everything Under One Roof',
+    siteName: 'Bangla Bazar',
+    tagline: 'Your Trusted Online Marketplace',
     topBarNotice: 'Free delivery across Bangladesh on orders over ৳2,000 | Hotline: 16443',
     searchPlaceholder: 'Search products, brands, or categories...',
     allCategories: 'All Categories',
@@ -213,6 +213,6 @@ export const TRANSLATIONS = {
     trustDesc3: 'Hassle-free replacement if there are issues',
     trustTitle4: '24/7 Customer Support',
     trustDesc4: 'Helpline: 16443 or live web chat anytime',
-    footerAbout: 'OneRoof — Nationwide online marketplace across Bangladesh, delivering 100% authentic products with fast cash on delivery under one roof.',
+    footerAbout: 'Bangla Bazar — Nationwide online marketplace across Bangladesh, delivering 100% authentic products with fast cash on delivery.',
   },
 };

@@ -53,7 +53,7 @@ export const ShopPage: React.FC = () => {
   const allBrands = useMemo(() => {
     const brandsSet = new Set<string>();
     products.forEach((p) => {
-      const b = (!p.brand || p.brand.toLowerCase().includes('shopbase')) ? 'OneRoof Mart' : p.brand;
+      const b = (!p.brand || p.brand.toLowerCase().includes('shopbase') || p.brand.toLowerCase().includes('oneroof')) ? 'বাংলা বাজার' : p.brand;
       if (b) brandsSet.add(b);
     });
     return Array.from(brandsSet);

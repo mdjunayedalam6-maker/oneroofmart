@@ -491,7 +491,7 @@ export const AdminPage: React.FC = () => {
   const THEME_PRESETS = [
     {
       id: 'classic',
-      name: 'OneRoof Mart Classic (রয়্যাল ব্লু ও কমলা)',
+      name: 'বাংলা বাজার ক্লাসিক (রয়্যাল ব্লু ও কমলা)',
       primary: '#003882',
       accent: '#FF6B00',
     },
@@ -708,7 +708,7 @@ export const AdminPage: React.FC = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `oneroof-mart-backup-${Date.now()}.json`;
+    a.download = `bangla-bazar-backup-${Date.now()}.json`;
     a.click();
     URL.revokeObjectURL(url);
     addToast('ডাটা ব্যাকআপ ডাউনলোড সম্পন্ন হয়েছে', 'success');
@@ -725,7 +725,7 @@ export const AdminPage: React.FC = () => {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="font-black text-base sm:text-lg text-white tracking-wide">
-                OneRoof Mart Master Control
+                বাংলা বাজার (Bangla Bazar) Master Control
               </h1>
               <span className="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-500/30">
                 Live Admin
@@ -2449,7 +2449,7 @@ export const AdminPage: React.FC = () => {
                         type="url"
                         value={siteSettings.appDownloadUrl || ''}
                         onChange={(e) => updateSiteSettings({ appDownloadUrl: e.target.value })}
-                        placeholder="যেমন: https://example.com/oneroof-mart-app.apk অথবা ড্রাইভ লিংক"
+                        placeholder="যেমন: https://example.com/bangla-bazar-app.apk অথবা ড্রাইভ লিংক"
                         className="w-full pl-3 pr-24 py-2.5 bg-slate-800 border border-slate-600 rounded-xl text-white font-mono text-xs outline-none focus:border-emerald-400"
                       />
                       {siteSettings.appDownloadUrl?.trim() && (
@@ -2473,7 +2473,7 @@ export const AdminPage: React.FC = () => {
                         type="text"
                         value={siteSettings.appNameBn || ''}
                         onChange={(e) => updateSiteSettings({ appNameBn: e.target.value })}
-                        placeholder="যেমন: OneRoof Mart মোবাইল অ্যাপ"
+                        placeholder="যেমন: বাংলা বাজার মোবাইল অ্যাপ"
                         className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white outline-none focus:border-emerald-400"
                       />
                     </div>
@@ -3338,7 +3338,7 @@ export const AdminPage: React.FC = () => {
                       <span>Supabase ক্লাউড ডাটাবেজ ইন্টিগ্রেশন</span>
                     </h3>
                     <p className="text-xs text-slate-400 mt-0.5">
-                      প্রজেক্ট: <strong className="text-white font-mono">OneRoof Mart</strong> | আইডি: <span className="font-mono text-emerald-400">{supabaseUrl.replace('https://', '').split('.')[0]}</span> | অঞ্চল: <span className="font-mono text-slate-300">ap-southeast-1</span>
+                      প্রজেক্ট: <strong className="text-white font-mono">বাংলা বাজার (Bangla Bazar)</strong> | আইডি: <span className="font-mono text-emerald-400">{supabaseUrl.replace('https://', '').split('.')[0]}</span> | অঞ্চল: <span className="font-mono text-slate-300">ap-southeast-1</span>
                     </p>
                   </div>
                 </div>
@@ -3447,7 +3447,7 @@ export const AdminPage: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-300">
                 <div className="p-3 bg-slate-900/60 rounded-xl border border-slate-800">
                   <span className="font-bold text-amber-400 block mb-1">ধাপ 1:</span>
-                  <span>Supabase ড্যাশবোর্ডে গিয়ে আপনার <strong>OneRoof Mart</strong> প্রজেক্ট ওপেন করুন।</span>
+                  <span>Supabase ড্যাশবোর্ডে গিয়ে আপনার <strong>বাংলা বাজার (Bangla Bazar)</strong> প্রজেক্ট ওপেন করুন।</span>
                 </div>
                 <div className="p-3 bg-slate-900/60 rounded-xl border border-slate-800">
                   <span className="font-bold text-amber-400 block mb-1">ধাপ 2:</span>

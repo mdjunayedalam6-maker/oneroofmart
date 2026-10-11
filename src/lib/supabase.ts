@@ -44,8 +44,8 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
 
 // SQL Schema for Supabase SQL Editor
 export const SUPABASE_SETUP_SQL = `-- =========================================================
--- OneRoof Mart - Complete Supabase Backend Database Setup Script
--- Project: OneRoof Mart (ID: ppwaosjmbdyocrmhnwak | Region: ap-southeast-1)
+-- বাংলা বাজার (Bangla Bazar) - Complete Supabase Backend Database Setup Script
+-- Project: বাংলা বাজার (Bangla Bazar) (ID: ppwaosjmbdyocrmhnwak | Region: ap-southeast-1)
 -- Instructions:
 -- 1. Go to Supabase Dashboard (https://supabase.com/dashboard/project/ppwaosjmbdyocrmhnwak/sql/new)
 -- 2. Paste this entire script into SQL Editor
@@ -436,9 +436,9 @@ export async function fetchProductsFromSupabase(
           if (row.stock !== undefined && row.stock !== null) item.stock = Number(row.stock);
           
           if (item.id) {
-            // White-label safety: enforce OneRoof Mart brand and supplier price fields
-            if (!item.brand || item.brand.toLowerCase().includes('shopbase')) {
-              item.brand = 'OneRoof Mart';
+            // White-label safety: enforce Bangla Bazar brand and supplier price fields
+            if (!item.brand || item.brand.toLowerCase().includes('shopbase') || item.brand.toLowerCase().includes('oneroof')) {
+              item.brand = 'বাংলা বাজার';
             }
             if (!item.sku) {
               const cleanNum = item.id.replace(/\D/g, '');
@@ -511,7 +511,7 @@ export async function updateAllProductsProfitMarginInSupabase(
         item.profitMarginPercent = validMargin;
         item.price = retailPrice;
         item.originalPrice = originalPrice;
-        item.brand = 'OneRoof Mart';
+        item.brand = 'বাংলা বাজার';
 
         return {
           id: row.id,

@@ -37,7 +37,7 @@ export interface SiteSettings {
   youtubeLink?: string;
   tiktokLink?: string;
   appDownloadUrl?: string; // App / Software download/install link
-  appNameBn?: string; // e.g. OneRoof মোবাইল অ্যাপ
+  appNameBn?: string; // e.g. বাংলা বাজার মোবাইল অ্যাপ
   appSubtitleBn?: string; // e.g. সহজ ও দ্রুত কেনাকাটার জন্য ডাউনলোড করুন
   globalProfitMargin?: number; // Universal profit margin % across all products e.g. 15
   shopbaseConfig?: {

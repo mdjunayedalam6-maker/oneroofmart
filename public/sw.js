@@ -1,4 +1,4 @@
-const CACHE_NAME = 'oneroof-pwa-v3';
+const CACHE_NAME = 'banglabazar-pwa-v1';
 const PRECACHE_URLS = [
   '/',
   '/index.html',

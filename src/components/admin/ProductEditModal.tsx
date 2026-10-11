@@ -141,7 +141,7 @@ export const ProductEditModal: React.FC<ProductEditModalProps> = ({
       setTitleEn('');
       setCategory(categories[0]?.slug || 'electronics');
       setSubcategory('');
-      setBrand('OneRoof Mart Official');
+      setBrand('বাংলা বাজার অফিসিয়াল');
       setPriceStr('205');
       setOriginalPriceStr('250');
       setStockStr('50');
@@ -332,7 +332,7 @@ export const ProductEditModal: React.FC<ProductEditModalProps> = ({
         category,
         subcategory,
         sku: sku.trim() || undefined,
-        brand: brand.trim() || 'OneRoof Mart',
+        brand: brand.trim() || 'বাংলা বাজার',
         price: finalPrice,
         originalPrice: finalOriginalPrice,
         discountPercentage,
@@ -361,7 +361,7 @@ export const ProductEditModal: React.FC<ProductEditModalProps> = ({
         descriptionEn: descriptionEn || 'Premium quality product.',
         category: category || categories[0]?.slug || 'electronics',
         subcategory,
-        brand: brand.trim() || 'OneRoof Mart',
+        brand: brand.trim() || 'বাংলা বাজার',
         price: finalPrice,
         originalPrice: finalOriginalPrice,
         discountPercentage,
@@ -378,7 +378,7 @@ export const ProductEditModal: React.FC<ProductEditModalProps> = ({
         isNewArrival: true,
         tags: tags.length ? tags : ['নতুন পণ্য', 'অরিজিনাল'],
         specifications: {
-          'ব্র্যান্ড': brand.trim() || 'OneRoof Mart',
+          'ব্র্যান্ড': brand.trim() || 'বাংলা বাজার',
           'ওয়ারেন্টি': warranty,
           'ডেলিভারি': deliveryTime,
         },
@@ -481,7 +481,7 @@ export const ProductEditModal: React.FC<ProductEditModalProps> = ({
                 type="text"
                 value={brand}
                 onChange={(e) => setBrand(e.target.value)}
-                placeholder="e.g. Samsung, Apple, OneRoof Mart"
+                placeholder="e.g. Samsung, Apple, বাংলা বাজার"
                 className="w-full px-3 py-2 text-xs text-slate-900 font-medium placeholder-slate-400 bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:border-indigo-600 outline-none"
               />
             </div>
